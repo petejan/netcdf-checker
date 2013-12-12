@@ -69,18 +69,23 @@ public class Time extends Check
 			{
 				Date st = sdf2.parse(timeStart.getStringValue());
 				Date et = sdf2.parse(timeEnd.getStringValue());
-                System.out.println("GLOBAL :: time start " + sdf.format(st) + " end " + sdf.format(et));
+                System.out.println("GLOBAL       :: time start " + sdf.format(st) + " end " + sdf.format(et));
                 
                 if (st.before(startDate))
                 {
 					System.out.println("FAIL::Global time_coverage_start before timerange in TIME variable");		
 					result.fail();
                 }
+                else 
+                	result.pass();
+                
                 if (et.after(endDate))
                 {
 					System.out.println("FAIL::Global time_coverage_end after timerange in TIME variable");			                	
 					result.fail();
                 }
+                else 
+                	result.pass();
 			}
 			catch (ParseException e)
 			{
@@ -100,6 +105,8 @@ public class Time extends Check
 			
 			result.fail();
 		}
+        else 
+        	result.pass();
 				
 		return result;
 	}

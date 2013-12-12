@@ -8,33 +8,19 @@
    <rule name="Check for Global Attributes">
    		<class>org.imos.mooring.abos.netcdf.check.Globals</class>
    		
-   		<attribute>project</attribute>
    		<attribute>institution</attribute>
    		<attribute>title</attribute>
    		<attribute>institution</attribute>
-   		<attribute>date_created</attribute>
-   		<attribute>abstract</attribute>
-   		<attribute>keywords</attribute>
    		<attribute>naming_authority</attribute>
    		<attribute>time_coverage_start</attribute>
    		<attribute>time_coverage_end</attribute>
-   		<attribute>data_centre</attribute>
-   		<attribute>data_centre_email</attribute>
    		<attribute>author</attribute>
-   		<attribute>principal_investigator</attribute>
    		<attribute>citation</attribute>
-   		<attribute>acknowledgement</attribute>
    		<attribute>distribution_statement</attribute>
+   		<attribute>history</attribute>
    		
    		<attribute>site_code</attribute>
    		<attribute>netcdf_version</attribute>
-   		<attribute>geospatial_lat_units</attribute>
-   		<attribute>geospatial_lon_units</attribute>
-   		<attribute>geospatial_vertical_units</attribute>
-   		<attribute>author_email</attribute>
-   		<attribute>principal_investigator_email</attribute>
-
-   		<attribute>principal_investigator_email</attribute>
    </rule>
    
    <rule name="Check IMOS for Global Attributes Float">
@@ -47,6 +33,64 @@
    		<attribute>geospatial_lon_min</attribute>
    		<attribute>geospatial_vertical_min</attribute>
    		<attribute>geospatial_vertical_max</attribute>
+   </rule>
+
+   <rule name="Check OS for Global Attributes">
+   		<class>org.imos.mooring.abos.netcdf.check.Globals</class>
+   		<convention>OceanSITES.*</convention>
+   		
+   		<attribute>id</attribute>
+   		<attribute>platform_code</attribute>
+   		<attribute>cdm_data_type</attribute>
+   		<attribute>source</attribute>
+   		<attribute>comment</attribute>
+   		<attribute>data_type</attribute>
+   		<attribute>format_version</attribute>
+   		<attribute>data_update</attribute>
+   		<attribute>site_code</attribute>
+   		<attribute>array</attribute>
+   		<attribute>network</attribute>
+   		<attribute>wmo_platform_code</attribute>
+   		<attribute>data_mode</attribute>
+   		<attribute>quality_control_indicator</attribute>
+   		<attribute>quality_index</attribute>
+   		<attribute>references</attribute>
+   		<attribute>institution_references</attribute>
+   		<attribute>netcdf_version</attribute>
+   		<attribute>area</attribute>
+   		<attribute>contact</attribute>
+   		<attribute>data_assembly_center</attribute>
+   		<attribute>update_interval</attribute>
+   		<attribute>qc_manual</attribute>
+   		<attribute>pi_name</attribute>
+   		
+   		<attribute>geospatial_lat_min</attribute>
+   		<attribute>geospatial_lat_max</attribute>
+   		<attribute>geospatial_lon_min</attribute>
+   		<attribute>geospatial_lon_min</attribute>
+   		<attribute>geospatial_vertical_min</attribute>
+   		<attribute>geospatial_vertical_max</attribute>
+   </rule>
+   <rule name="Check IMOS for Global Attributes">
+   		<class>org.imos.mooring.abos.netcdf.check.Globals</class>
+   		<convention>IMOS.*</convention>
+
+   		<attribute>data_centre</attribute>
+   		<attribute>data_centre_email</attribute>
+   		
+   		<attribute>project</attribute>
+   		<attribute>date_created</attribute>
+   		<attribute>abstract</attribute>
+   		<attribute>keywords</attribute>
+   		<attribute>acknowledgement</attribute>
+   		<attribute>principal_investigator</attribute>
+   		
+   		<attribute>geospatial_lat_units</attribute>
+   		<attribute>geospatial_lon_units</attribute>
+   		<attribute>geospatial_vertical_units</attribute>
+   		<attribute>author_email</attribute>
+   		<attribute>principal_investigator_email</attribute>
+   		   		
    </rule>
 
    <rule name="Check Dimensions">
@@ -80,8 +124,19 @@
    		<attribute>_FillValue</attribute>
    		<attribute>quality_control_set</attribute>
    </rule>
-   <rule name="Check Variable Attributes">
+   <rule name="Check Variable Units attribute">
    		<class>org.imos.mooring.abos.netcdf.check.StdUnits</class>
+   </rule>
+   <rule name="Check Ancillary Variable Attributes">
+   		<class>org.imos.mooring.abos.netcdf.check.AncillaryVariableAttributes</class>
+   		
+   		<attribute>quality_control_set</attribute>
+   		<attribute>quality_control_conventions</attribute>
+   		<attribute>valid_min</attribute>
+   		<attribute>valid_max</attribute>
+   		<attribute>_FillValue</attribute>
+   		<attribute>flag_values</attribute>
+   		<attribute>flag_meanings</attribute>
    </rule>
 
 </checker_rules>

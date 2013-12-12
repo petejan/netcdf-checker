@@ -55,7 +55,7 @@ public class XMLfileChecker
 			Attribute attConventions = nc.findGlobalAttributeIgnoreCase("Conventions");
 			String conventions = attConventions.getStringValue();
 			System.out.println("File Conventions : " + conventions);
-			String[] convention = conventions.split(";");
+			String[] convention = conventions.split("[;,]");
 
 			File fXmlFile = new File(checkRules.get(0));
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();

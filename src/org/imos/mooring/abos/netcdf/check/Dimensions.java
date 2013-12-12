@@ -33,14 +33,14 @@ import ucar.nc2.Dimension;
 import ucar.nc2.Variable;
 import ucar.nc2.dataset.NetcdfDataset;
 
-public class Dimensions extends Globals
+public class Dimensions extends Check
 {
 	public int checkDimensionVariable(NetcdfDataset nc, Dimension dim)
 	{
 		Variable checkVar = nc.findVariable(dim.getShortName());
 		if (checkVar == null)				
 		{
-			System.out.println("FAIL::Dimension has no variable does not exist : " + dim.getShortName());
+			System.out.println("FAIL::Dimension '" + dim.getShortName() + "' has no variable : " + dim.getShortName());
 			
 			result.fail();
 			return 0;			
