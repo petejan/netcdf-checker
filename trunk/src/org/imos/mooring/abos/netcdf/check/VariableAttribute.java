@@ -21,6 +21,7 @@ package org.imos.mooring.abos.netcdf.check;
 //OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
 //OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -36,10 +37,34 @@ public class VariableAttribute extends Check
 	{
 		String checkName = eElement.getAttribute("name");
 		List<Variable> vars = ds.getVariables();
+		List<Variable> varsNoAnc = new ArrayList<Variable>(vars);
+		
+		// need to remove associated variables from list
 		Iterator<Variable> vi = vars.iterator();
 		while (vi.hasNext())
 		{
 			Variable var = (Variable) vi.next();
+			//System.out.println("FIND VAR : " + var.getShortName());
+			
+			if (!var.isCoordinateVariable())
+			{
+				Attribute check = var.findAttribute("ancillary_variables");
+				if (check != null)
+				{
+					String ancName = check.getStringValue();
+					Variable ancVar = ds.findVariable(ancName);
+					//System.out.println("Deleteing " + ancName);
+					varsNoAnc.remove(ancVar);				
+				}			
+			}
+		}
+				
+		// iterate through non coordinate variables
+		vi = varsNoAnc.iterator();
+		while (vi.hasNext())
+		{
+			Variable var = (Variable) vi.next();
+			//System.out.println("CHECH VAR : " + var.getShortName());
 			
 			if (!var.isCoordinateVariable())
 			{
@@ -57,7 +82,7 @@ public class VariableAttribute extends Check
 						result.pass();
 					}
 				}
-				// TODO: check associated valiables exists
+				// TODO: check associated variables exists
 			}
 		}
 				

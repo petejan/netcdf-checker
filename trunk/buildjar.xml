@@ -5,7 +5,7 @@
     <target name="create_run_jar">
         <jar destfile="C:/svn/netcdf-checker/FileChecker.jar" filesetmanifest="mergewithoutmain">
             <manifest>
-                <attribute name="Main-Class" value="org.imos.mooring.abos.netcdf.XMLFileChecker"/>
+                <attribute name="Main-Class" value="org.imos.mooring.abos.netcdf.XMLfileChecker"/>
                 <attribute name="Class-Path" value="."/>
             </manifest>
             <fileset dir="C:/svn/netcdf-checker/bin"/>

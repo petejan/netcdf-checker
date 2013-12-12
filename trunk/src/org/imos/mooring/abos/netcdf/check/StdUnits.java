@@ -56,17 +56,21 @@ public class StdUnits extends Check
 		while (vi.hasNext())
 		{
 			Variable var = (Variable) vi.next();
-
-			Attribute ua = var.findAttribute("units");
-			if ((ua != null) && (units != null))
+			if (!var.isCoordinateVariable())
 			{
-				Unit u = units.getByName(ua.getStringValue());
-				if (u == null)
+				Attribute ua = var.findAttribute("units");
+				if ((ua != null) && (units != null))
 				{
-					System.out.println("FAIL::Variable " + var.getShortName() + " Unknown unit : " + ua.getStringValue());
-					
-					result.fail();					
-				}						
+					Unit u = units.getByName(ua.getStringValue());
+					if (u == null)
+					{
+						System.out.println("FAIL::Variable " + var.getShortName() + " Unknown unit : " + ua.getStringValue());
+						
+						result.fail();					
+					}
+					else
+						result.pass();
+				}
 			}
 			
 		}
