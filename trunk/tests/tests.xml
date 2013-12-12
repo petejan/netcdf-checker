@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<checker_rules xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="checker_rules.xsd">
+   <version_number>01</version_number>
+   <last_modified>2013-12-13</last_modified>
+   <institution>IMOS</institution>
+   <contact>peter.jansen@csiro.au</contact>
+
+   <rule name="Check for Global Attributes">
+   		<class>org.imos.mooring.abos.netcdf.check.Globals</class>
+   		
+   		<attribute>project</attribute>
+   		<attribute>institution</attribute>
+   		<attribute>title</attribute>
+   		<attribute>institution</attribute>
+   		<attribute>date_created</attribute>
+   		<attribute>abstract</attribute>
+   		<attribute>keywords</attribute>
+   		<attribute>naming_authority</attribute>
+   		<attribute>time_coverage_start</attribute>
+   		<attribute>time_coverage_end</attribute>
+   		<attribute>data_centre</attribute>
+   		<attribute>data_centre_email</attribute>
+   		<attribute>author</attribute>
+   		<attribute>principal_investigator</attribute>
+   		<attribute>citation</attribute>
+   		<attribute>acknowledgement</attribute>
+   		<attribute>distribution_statement</attribute>
+   		
+   		<attribute>site_code</attribute>
+   		<attribute>netcdf_version</attribute>
+   		<attribute>geospatial_lat_units</attribute>
+   		<attribute>geospatial_lon_units</attribute>
+   		<attribute>geospatial_vertical_units</attribute>
+   		<attribute>author_email</attribute>
+   		<attribute>principal_investigator_email</attribute>
+
+   		<attribute>principal_investigator_email</attribute>
+   </rule>
+   
+   <rule name="Check IMOS for Global Attributes Float">
+   		<class>org.imos.mooring.abos.netcdf.check.GlobalFloat</class>
+   		<convention>IMOS-1.*</convention>
+   		
+   		<attribute>geospatial_lat_min</attribute>
+   		<attribute>geospatial_lat_max</attribute>
+   		<attribute>geospatial_lon_min</attribute>
+   		<attribute>geospatial_lon_min</attribute>
+   		<attribute>geospatial_vertical_min</attribute>
+   		<attribute>geospatial_vertical_max</attribute>
+   </rule>
+
+   <rule name="Check Dimensions">
+   		<class>org.imos.mooring.abos.netcdf.check.Dimensions</class>
+   		
+   		<dimension-required>TIME</dimension-required>
+   </rule>
+
+   <rule name="Check TIME dimension">
+   		<class>org.imos.mooring.abos.netcdf.check.Time</class>
+   		
+   		<variable>TIME</variable>
+   		<global-start>time_coverage_start</global-start>
+   		<global-end>time_coverage_end</global-end>
+   </rule>
+
+   <rule name="Check Variable Standard Name">
+   		<class>org.imos.mooring.abos.netcdf.check.StandardName</class>
+   </rule>
+   <rule name="Check Variable has standard_name or long_name">
+   		<class>org.imos.mooring.abos.netcdf.check.Name</class>
+   </rule>
+   
+   <rule name="Check Variable Attributes">
+   		<class>org.imos.mooring.abos.netcdf.check.VariableAttribute</class>
+   		
+   		<attribute>sensor_serial_number</attribute>
+   		<attribute>units</attribute>
+   		<attribute>valid_min</attribute>
+   		<attribute>valid_max</attribute>
+   		<attribute>_FillValue</attribute>
+   		<attribute>quality_control_set</attribute>
+   </rule>
+   <rule name="Check Variable Attributes">
+   		<class>org.imos.mooring.abos.netcdf.check.StdUnits</class>
+   </rule>
+
+</checker_rules>
