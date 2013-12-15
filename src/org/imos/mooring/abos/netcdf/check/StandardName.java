@@ -29,6 +29,7 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -39,6 +40,8 @@ import ucar.nc2.Variable;
 
 public class StandardName extends Check
 {
+	static Logger logger = Logger.getLogger(StandardName.class.getName());
+	
 	HashMap<String, String> cfNames = new HashMap<String, String>();
 	
 	public StandardName()
@@ -56,7 +59,7 @@ public class StandardName extends Check
 			// optional, but recommended
 			doc.getDocumentElement().normalize();
 
-			System.out.println("cf-standard-name-table.xml:: Root element :" + doc.getDocumentElement().getNodeName());
+			logger.info("cf-standard-name-table.xml:: Root element :" + doc.getDocumentElement().getNodeName());
 
 			NodeList nList = doc.getElementsByTagName("entry");
 
@@ -64,18 +67,10 @@ public class StandardName extends Check
 			{
 				Node nNode = nList.item(temp);
 
-				// System.out.println("Current Element :" +
-				// nNode.getNodeName());
-
 				if (nNode.getNodeType() == Node.ELEMENT_NODE)
 				{
 
 					Element eElement = (Element) nNode;
-
-					// System.out.println("id : " +
-					// eElement.getAttribute("id"));
-					// System.out.println("canonical_units : " +
-					// eElement.getElementsByTagName("canonical_units").item(0).getTextContent());
 
 					cfNames.put(eElement.getAttribute("id"), eElement.getElementsByTagName("canonical_units").item(0).getTextContent());
 				}
@@ -104,10 +99,10 @@ public class StandardName extends Check
 			{
 				// Check standard_name for a unit in the cf conventions
 				String cfUnit = cfNames.get(sn.getStringValue());
-				//System.out.println("VARIABLE STD-NAME: " + var.getShortName() + " std_name " + sn.getStringValue() +" standard name CF Unit " + cfUnit);
+				logger.debug("VARIABLE STD-NAME: " + var.getShortName() + " std_name " + sn.getStringValue() +" standard name CF Unit " + cfUnit);
 				if (cfUnit == null)
 				{
-					System.out.println("FAIL::Variable " + var.getShortName() + " not standard name : " + sn.getStringValue());
+					logger.warn("FAIL::Variable " + var.getShortName() + " not standard name : " + sn.getStringValue());
 	
 					result.fail();					
 				}

@@ -3,6 +3,7 @@ package org.imos.mooring.abos.netcdf.check;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 
 import ucar.nc2.Attribute;
@@ -10,6 +11,7 @@ import ucar.nc2.Variable;
 
 public class Name extends Check
 {
+	static Logger logger = Logger.getLogger(Name.class.getName());
 
 	@Override
 	public PassFail check(Element eElement)
@@ -36,7 +38,7 @@ public class Name extends Check
 				}
 				else
 				{
-					System.out.println("FAIL::Variable " + var.getShortName() + " no standard_name or long_name ");
+					logger.warn("FAIL::Variable " + var.getShortName() + " no standard_name or long_name ");
 					result.fail();
 				}
 			}

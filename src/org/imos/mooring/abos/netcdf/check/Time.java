@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 
 import ucar.ma2.DataType;
@@ -39,6 +40,8 @@ import ucar.nc2.time.CalendarDate;
 
 public class Time extends Check
 {
+	static Logger logger = Logger.getLogger(Time.class.getName());
+	
 	SimpleDateFormat sdf;
 	public Time()
 	{
@@ -60,7 +63,7 @@ public class Time extends Check
 			int tSize = dates.size();
 			Date startDate = new Date(dates.get(0).getMillis());
 			Date endDate = new Date(dates.get(tSize-1).getMillis());
-            System.out.println("VARIABLE TIME:: time start " + sdf.format(startDate) + " end " + sdf.format(endDate));
+            logger.info("VARIABLE TIME:: time start " + sdf.format(startDate) + " end " + sdf.format(endDate));
             
             SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
             Attribute timeStart = ds.findGlobalAttribute("time_coverage_start");
@@ -69,11 +72,11 @@ public class Time extends Check
 			{
 				Date st = sdf2.parse(timeStart.getStringValue());
 				Date et = sdf2.parse(timeEnd.getStringValue());
-                System.out.println("GLOBAL       :: time start " + sdf.format(st) + " end " + sdf.format(et));
+                logger.info("GLOBAL       :: time start " + sdf.format(st) + " end " + sdf.format(et));
                 
                 if (st.before(startDate))
                 {
-					System.out.println("FAIL::Global time_coverage_start before timerange in TIME variable");		
+					logger.debug("FAIL::Global time_coverage_start before timerange in TIME variable");		
 					result.fail();
                 }
                 else 
@@ -81,7 +84,7 @@ public class Time extends Check
                 
                 if (et.after(endDate))
                 {
-					System.out.println("FAIL::Global time_coverage_end after timerange in TIME variable");			                	
+					logger.debug("FAIL::Global time_coverage_end after timerange in TIME variable");			                	
 					result.fail();
                 }
                 else 
@@ -89,7 +92,7 @@ public class Time extends Check
 			}
 			catch (ParseException e)
 			{
-				System.out.println("FAIL::Global parse time_coverage_start time_coverage_end check " + e.getMessage());			                	
+				logger.debug("FAIL::Global parse time_coverage_start time_coverage_end check " + e.getMessage());			                	
 				result.fail();
 			}
 		}
@@ -101,7 +104,7 @@ public class Time extends Check
 
 		if (var.findAttribute("units").getStringValue().compareTo("days since 1950-01-01T00:00:00Z") != 0)
 		{
-			System.out.println("FAIL::Variable TIME units not 'days since 1950-01-01T00:00:00Z'");	
+			logger.debug("FAIL::Variable TIME units not 'days since 1950-01-01T00:00:00Z'");	
 			
 			result.fail();
 		}

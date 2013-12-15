@@ -22,6 +22,7 @@ package org.imos.mooring.abos.netcdf.check;
 //OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
+import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 
 import ucar.nc2.Attribute;
@@ -29,6 +30,8 @@ import ucar.nc2.dataset.NetcdfDataset;
 
 public class Globals extends Check
 {
+	static Logger logger = Logger.getLogger(Globals.class.getName());
+	
 	public Globals()
 	{
 		result = new PassFail();		
@@ -45,7 +48,7 @@ public class Globals extends Check
 			Attribute check = ds.findGlobalAttribute(varName.trim());
 			if (check == null)
 			{
-				System.out.println("FAILED:: " + checkName + " ATTRIBUTE " + varName);
+				logger.warn("FAILED:: " + checkName + " ATTRIBUTE " + varName);
 				result.fail();
 			}
 			else
@@ -56,7 +59,7 @@ public class Globals extends Check
 				}
 				else
 				{
-					System.out.println("FAILED:: " + checkName + " ATTRIBUTE " + varName + " not string");
+					logger.warn("FAILED:: " + checkName + " ATTRIBUTE " + varName + " not string");
 					result.fail();
 				}
 			}
