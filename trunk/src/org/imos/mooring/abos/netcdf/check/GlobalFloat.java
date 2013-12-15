@@ -21,6 +21,7 @@ package org.imos.mooring.abos.netcdf.check;
 //OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
 //OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 
 import ucar.ma2.DataType;
@@ -28,6 +29,8 @@ import ucar.nc2.Attribute;
 
 public class GlobalFloat extends Check
 {
+	static Logger logger = Logger.getLogger(GlobalFloat.class.getName());
+	
 	@Override
 	public PassFail check(Element eElement)
 	{
@@ -39,7 +42,7 @@ public class GlobalFloat extends Check
 			Attribute check = ds.findGlobalAttribute(varName.trim());
 			if (check == null)
 			{
-				System.out.println("FAILED:: " + checkName + " ATTRIBUTE " + varName);
+				logger.warn("FAILED:: " + checkName + " ATTRIBUTE " + varName);
 				result.fail();
 			}
 			else
@@ -50,7 +53,7 @@ public class GlobalFloat extends Check
 				}
 				else
 				{
-					System.out.println("FAILED:: " + checkName + " ATTRIBUTE " + varName + " not float is " + check.getDataType());
+					logger.warn("FAILED:: " + checkName + " ATTRIBUTE " + varName + " not float is " + check.getDataType());
 					
 					result.fail();
 				}

@@ -8,6 +8,9 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.xml.DOMConfigurator;
 import org.imos.mooring.abos.netcdf.check.Check;
 import org.imos.mooring.abos.netcdf.check.PassFail;
 import org.w3c.dom.Document;
@@ -44,17 +47,20 @@ import ucar.nc2.dataset.NetcdfDataset;
 public class XMLfileChecker
 {
 	String fileName;
+	static Logger logger = Logger.getLogger(XMLfileChecker.class);
 	
 	public void check(String f)
 	{
 		fileName = f;
 		try
 		{
+			logger.info("Checking File : " + fileName);
+			
 			NetcdfDataset nc = NetcdfDataset.acquireDataset(fileName, null); 
 			
 			Attribute attConventions = nc.findGlobalAttributeIgnoreCase("Conventions");
 			String conventions = attConventions.getStringValue();
-			System.out.println("File Conventions : " + conventions);
+			logger.info("File Conventions : " + conventions);
 			String[] convention = conventions.split("[;,]");
 
 			File fXmlFile = new File(checkRules.get(0));
@@ -65,7 +71,7 @@ public class XMLfileChecker
 			// optional, but recommended
 			doc.getDocumentElement().normalize();
 
-			System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
+			logger.info("Root element :" + doc.getDocumentElement().getNodeName());
 
 			NodeList nList = doc.getElementsByTagName("rule");
 
@@ -74,7 +80,7 @@ public class XMLfileChecker
 			{
 				Node nNode = nList.item(temp);
 
-				//System.out.println("Current Element :" + nNode.getNodeName());
+				//logger.info("Current Element :" + nNode.getNodeName());
 
 				if (nNode.getNodeType() == Node.ELEMENT_NODE)
 				{
@@ -83,7 +89,7 @@ public class XMLfileChecker
 
 					String checkName = eElement.getAttribute("name");
 					String checkClassName = eElement.getElementsByTagName("class").item(0).getTextContent();
-					System.out.println("class : " + checkClassName + " : " + checkName);
+					logger.info("class : " + checkClassName + " : " + checkName);
 					NodeList checkConvention = eElement.getElementsByTagName("convention");
 					boolean bConvention = true;
 					if (checkConvention.getLength() > 0)
@@ -91,14 +97,14 @@ public class XMLfileChecker
 						Pattern p = Pattern.compile(checkConvention.item(0).getTextContent());
 
 						bConvention = false;
-						//System.out.println("convention : " + checkConvention.getLength());
+						//logger.info("convention : " + checkConvention.getLength());
 						for(int i=0;i<convention.length;i++)
 						{
-							//System.out.println(i + " " + convention[i] + " " + checkConvention.item(0).getTextContent() );
+							//logger.info(i + " " + convention[i] + " " + checkConvention.item(0).getTextContent() );
 							if (p.matcher(convention[i]).matches())
 							{
 								bConvention = true;
-								//System.out.println("Matched Convention");
+								//logger.info("Matched Convention");
 							}
 						}
 					}
@@ -110,11 +116,10 @@ public class XMLfileChecker
 						agent.setDataFile(nc);
 						PassFail test = agent.check(eElement);
 						
-						System.out.println("Test Result : " + checkName + " " + test);
+						logger.info("Test Result : " + checkName + " " + test + "\n");
 						result.add(test);
 					}
 				}
-				System.out.println();
 			}
 		}
 		catch (Exception e)
@@ -134,12 +139,13 @@ public class XMLfileChecker
 	public static void main(String[] args) 
 	{
 		XMLfileChecker ck = new XMLfileChecker();
+		PropertyConfigurator.configure("log4j.properties");
 		
 		String file = null;
 		int i = 0;
 		while (i < args.length)
 		{
-			//System.out.println("ARG : " + i + " value " + args[i]);
+			//logger.info("ARG : " + i + " value " + args[i]);
 			if (args[i].startsWith("-x"))
 			{
 				ck.addXMLfile(args[++i]);

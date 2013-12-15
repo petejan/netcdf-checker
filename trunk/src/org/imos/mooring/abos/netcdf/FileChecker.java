@@ -36,6 +36,8 @@ import java.util.TimeZone;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -55,6 +57,8 @@ import ucar.units.UnitDBException;
 
 public class FileChecker 
 {
+	static Logger logger = Logger.getLogger(XMLfileChecker.class);
+
 	String fileName;
 	int pass = 0;
 	int fail = 0;
@@ -69,7 +73,7 @@ public class FileChecker
 		Attribute check = nc.findGlobalAttribute(v);
 		if (check == null)
 		{
-			System.out.println("FAIL::Global Attribute does not exist : " + v);
+			logger.info("FAIL::Global Attribute does not exist : " + v);
 			
 			fail++;
 			return 0;
@@ -77,7 +81,7 @@ public class FileChecker
 		
 		if (!check.isString())
 		{
-			System.out.println("FAIL::Global Attribute not String Type : " + v);
+			logger.info("FAIL::Global Attribute not String Type : " + v);
 			
 			fail++;
 			return 0;
@@ -93,7 +97,7 @@ public class FileChecker
 		Attribute check = nc.findGlobalAttribute(v);
 		if (check == null)
 		{
-			System.out.println("FAIL::Global Attribute does not exist : " + v);
+			logger.info("FAIL::Global Attribute does not exist : " + v);
 			
 			fail++;
 			return 0;
@@ -101,7 +105,7 @@ public class FileChecker
 		
 		if (!check.getDataType().isFloatingPoint())
 		{
-			System.out.println("FAIL::Global Attribute not float Type : " + v);
+			logger.info("FAIL::Global Attribute not float Type : " + v);
 			
 			fail++;
 			return 0;
@@ -116,7 +120,7 @@ public class FileChecker
 		Attribute check = nc.findGlobalAttribute(v);
 		if (check == null)
 		{
-			System.out.println("FAIL::Global Attribute does not exist : " + v);
+			logger.info("FAIL::Global Attribute does not exist : " + v);
 			
 			fail++;
 			return 0;
@@ -124,7 +128,7 @@ public class FileChecker
 		
 		if (!check.isString())
 		{
-			System.out.println("FAIL::Global Attribute not String Type : " + v);
+			logger.info("FAIL::Global Attribute not String Type : " + v);
 			
 			fail++;
 			return 0;
@@ -132,7 +136,7 @@ public class FileChecker
 				
 		if (!check.getStringValue().matches(s))
 		{
-			System.out.println("FAIL::Global Attribute wrong value for : " + v + " is " + check.getStringValue() + " should be " + s);
+			logger.info("FAIL::Global Attribute wrong value for : " + v + " is " + check.getStringValue() + " should be " + s);
 			
 			fail++;
 			return 0;
@@ -146,14 +150,14 @@ public class FileChecker
 	
 	public int checkGlobals(NetcdfDataset nc)
 	{
-		System.out.println("CHECK GLOBALS:");
+		logger.info("CHECK GLOBALS:");
 		// iterate over globals
 		List<Attribute> globals = nc.getGlobalAttributes();
 		Iterator<Attribute> gi = globals.iterator();
 		while (gi.hasNext())
 		{
 			Attribute att = (Attribute) gi.next();
-			System.out.println("GLOBAL: " + att.getFullName());
+			logger.info("GLOBAL: " + att.getFullName());
 		}
 		
 		// From required table 2
@@ -166,7 +170,7 @@ public class FileChecker
 		}
 		if (convAtt == null)
 		{
-			System.out.println("FAIL::Global no Attribute 'Conventions' probably should give up");
+			logger.info("FAIL::Global no Attribute 'Conventions' probably should give up");
 			
 			fail++;						
 		}
@@ -175,7 +179,7 @@ public class FileChecker
 			conventions = convAtt.getStringValue();
 			if (conventions.compareTo("CF-1.6;IMOS-1.3") != 0)
 			{
-				System.out.println("FAIL::Global Attribute Conventions should be : CF-1.6;IMOS-1.3");
+				logger.info("FAIL::Global Attribute Conventions should be : CF-1.6;IMOS-1.3");
 				
 				fail++;			
 			}
@@ -224,7 +228,7 @@ public class FileChecker
 		Dimension check = nc.findDimension(d);
 		if (check == null)
 		{
-			System.out.println("FAIL::Dimension does not exist : " + d);
+			logger.info("FAIL::Dimension does not exist : " + d);
 			
 			fail++;
 			return 0;			
@@ -232,14 +236,14 @@ public class FileChecker
 		Variable checkVar = nc.findVariable(check.getShortName());
 		if (checkVar == null)				
 		{
-			System.out.println("FAIL::Dimension has no variable does not exist : " + d);
+			logger.info("FAIL::Dimension has no variable does not exist : " + d);
 			
 			fail++;
 			return 0;			
 		}
 		if (!checkVar.isCoordinateVariable())
 		{
-			System.out.println("FAIL::Dimension variable is not a coordinate variable : " + d);
+			logger.info("FAIL::Dimension variable is not a coordinate variable : " + d);
 			
 			fail++;
 			return 0;			
@@ -254,14 +258,14 @@ public class FileChecker
 		Variable checkVar = nc.findVariable(dim.getShortName());
 		if (checkVar == null)				
 		{
-			System.out.println("FAIL::Dimension has no variable does not exist : " + dim.getShortName());
+			logger.info("FAIL::Dimension has no variable does not exist : " + dim.getShortName());
 			
 			fail++;
 			return 0;			
 		}
 		if (!checkVar.isCoordinateVariable())
 		{
-			System.out.println("FAIL::Dimension variable is not a coordinate variable : " + dim.getShortName());
+			logger.info("FAIL::Dimension variable is not a coordinate variable : " + dim.getShortName());
 			
 			fail++;
 			return 0;			
@@ -276,7 +280,7 @@ public class FileChecker
 		Attribute check =v.findAttribute(s);
 		if (check == null)				
 		{
-			System.out.println("FAIL::Variable " + v.getFullName() + " has no attribute : " + s);
+			logger.info("FAIL::Variable " + v.getFullName() + " has no attribute : " + s);
 			
 			fail++;
 			return 0;			
@@ -288,7 +292,7 @@ public class FileChecker
 	
 	public int checkDimensions(NetcdfDataset nc)
 	{
-		System.out.println("CHECK DIMENSIONS");
+		logger.info("CHECK DIMENSIONS");
 		
 		// iterate over dimensions
 		List<Dimension> dims = nc.getDimensions();
@@ -296,7 +300,7 @@ public class FileChecker
 		while (di.hasNext())
 		{
 			Dimension dim = (Dimension) di.next();
-			System.out.println("DIMENSION: " + dim.getFullName());
+			logger.info("DIMENSION: " + dim.getFullName());
 			checkDimensionVariable(nc, dim);
 		}
 				
@@ -310,7 +314,7 @@ public class FileChecker
         
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-		System.out.println("CHECK VARIABLES");
+		logger.info("CHECK VARIABLES");
 		StandardUnitDB units = null;
 		try
 		{
@@ -318,7 +322,7 @@ public class FileChecker
 		}
 		catch (UnitDBException e)
 		{
-			System.out.println("Cannot find units database, won't check for valid units");
+			logger.info("Cannot find units database, won't check for valid units");
 		}
 		
 		// iterate over variables
@@ -327,7 +331,7 @@ public class FileChecker
 		while (vi.hasNext())
 		{
 			Variable var = (Variable) vi.next();
-			System.out.println("VARIABLE: " + var.getFullName() + " " + var.getDimensionsString() + " " + var.getDataType());
+			logger.info("VARIABLE: " + var.getFullName() + " " + var.getDimensionsString() + " " + var.getDataType());
 			
 			// TODO:: add check of dimensions, all must have TIME
 			
@@ -336,7 +340,7 @@ public class FileChecker
 			while (ai.hasNext())
 			{
 				Attribute a = (Attribute) ai.next();
-				//System.out.println("VARIABLE-ATTRIBUTE : " + a.getFullName());
+				//logger.info("VARIABLE-ATTRIBUTE : " + a.getFullName());
 			}
 			
 			// From table 5
@@ -348,17 +352,17 @@ public class FileChecker
 				sn = var.findAttribute("long_name");
 				if (sn == null)
 				{
-					System.out.println("FAIL::Variable " + var.getShortName() + " no standard_name or long_name attribute");	
+					logger.info("FAIL::Variable " + var.getShortName() + " no standard_name or long_name attribute");	
 				}
 			}
 			else
 			{
 				// Check standard_name for a unit in the cf conventions
 				String cfUnit = cfNames.get(sn.getStringValue());
-				System.out.println("VARIABLE STD-NAME: " + var.getShortName() + " std_name " + sn.getStringValue() +" standard name CF Unit " + cfUnit);
+				logger.info("VARIABLE STD-NAME: " + var.getShortName() + " std_name " + sn.getStringValue() +" standard name CF Unit " + cfUnit);
 				if (cfUnit == null)
 				{
-					System.out.println("FAIL::Variable " + var.getShortName() + " not standard name : " + sn.getShortName());
+					logger.info("FAIL::Variable " + var.getShortName() + " not standard name : " + sn.getShortName());
 
 					fail++;					
 				}
@@ -378,7 +382,7 @@ public class FileChecker
 						Unit u = units.getByName(ua.getStringValue());
 						if (u == null)
 						{
-							System.out.println("FAIL::Variable " + var.getShortName() + " Unknown unit : " + ua.getStringValue());
+							logger.info("FAIL::Variable " + var.getShortName() + " Unknown unit : " + ua.getStringValue());
 							
 							fail++;					
 						}						
@@ -388,7 +392,7 @@ public class FileChecker
 				{
 					if (var.getDataType() != DataType.BYTE)
 					{
-						System.out.println("FAIL::Variable " + var.getShortName() + " should be byte type");
+						logger.info("FAIL::Variable " + var.getShortName() + " should be byte type");
 						
 						fail++;
 					}
@@ -404,7 +408,7 @@ public class FileChecker
 					int tSize = dates.size();
 					Date startDate = new Date(dates.get(0).getMillis());
 					Date endDate = new Date(dates.get(tSize-1).getMillis());
-	                System.out.println("VARIABLE TIME:: time start " + sdf.format(startDate) + " end " + sdf.format(endDate));
+	                logger.info("VARIABLE TIME:: time start " + sdf.format(startDate) + " end " + sdf.format(endDate));
 	                
 	                SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 	                Attribute timeStart = nc.findGlobalAttribute("time_coverage_start");
@@ -413,20 +417,20 @@ public class FileChecker
 					{
 						Date st = sdf2.parse(timeStart.getStringValue());
 						Date et = sdf2.parse(timeEnd.getStringValue());
-		                System.out.println("GLOBAL :: time start " + sdf.format(st) + " end " + sdf.format(et));
+		                logger.info("GLOBAL :: time start " + sdf.format(st) + " end " + sdf.format(et));
 		                
 		                if (st.before(startDate))
 		                {
-							System.out.println("FAIL::Global time_coverage_start before timerange in TIME variable");			                	
+							logger.info("FAIL::Global time_coverage_start before timerange in TIME variable");			                	
 		                }
 		                if (et.after(endDate))
 		                {
-							System.out.println("FAIL::Global time_coverage_end after timerange in TIME variable");			                	
+							logger.info("FAIL::Global time_coverage_end after timerange in TIME variable");			                	
 		                }
 					}
 					catch (ParseException e)
 					{
-						System.out.println("FAIL::Global parse time_coverage_start time_coverage_end check " + e.getMessage());			                	
+						logger.info("FAIL::Global parse time_coverage_start time_coverage_end check " + e.getMessage());			                	
 					}
 				}
 				catch (IOException e)
@@ -437,7 +441,7 @@ public class FileChecker
 
 				if (var.findAttribute("units").getStringValue().compareTo("days since 1950-01-01T00:00:00Z") != 0)
 				{
-					System.out.println("FAIL::Variable TIME units not 'days since 1950-01-01T00:00:00Z'");	
+					logger.info("FAIL::Variable TIME units not 'days since 1950-01-01T00:00:00Z'");	
 					
 					fail++;
 				}
@@ -479,7 +483,7 @@ public class FileChecker
 			// optional, but recommended
 			doc.getDocumentElement().normalize();
 
-			System.out.println("cf-standard-name-table.xml:: Root element :" + doc.getDocumentElement().getNodeName());
+			logger.info("cf-standard-name-table.xml:: Root element :" + doc.getDocumentElement().getNodeName());
 
 			NodeList nList = doc.getElementsByTagName("entry");
 
@@ -487,15 +491,15 @@ public class FileChecker
 			{
 				Node nNode = nList.item(temp);
 
-				//System.out.println("Current Element :" + nNode.getNodeName());
+				//logger.info("Current Element :" + nNode.getNodeName());
 
 				if (nNode.getNodeType() == Node.ELEMENT_NODE)
 				{
 
 					Element eElement = (Element) nNode;
 
-					//System.out.println("id : " + eElement.getAttribute("id"));
-					//System.out.println("canonical_units : " + eElement.getElementsByTagName("canonical_units").item(0).getTextContent());
+					//logger.info("id : " + eElement.getAttribute("id"));
+					//logger.info("canonical_units : " + eElement.getElementsByTagName("canonical_units").item(0).getTextContent());
 
 					cfNames.put(eElement.getAttribute("id"), eElement.getElementsByTagName("canonical_units").item(0).getTextContent());
 				}
@@ -514,20 +518,20 @@ public class FileChecker
 			//NetcdfDataset.initNetcdfDatasetCache(1, 10, 1);
 			NetcdfDataset nc = NetcdfDataset.acquireDataset(fileName, null); 
 		
-			System.out.println("File Title " + nc.getTitle());
-			System.out.println("File Type " + nc.getFileTypeId());
+			logger.info("File Title " + nc.getTitle());
+			logger.info("File Type " + nc.getFileTypeId());
 			
 			checkGlobals(nc);
-			System.out.println("Check Global " + pass + " fail " + fail);
-			System.out.println();
+			logger.info("Check Global " + pass + " fail " + fail);
+			logger.info("");
 			
 			checkDimensions(nc);
-			System.out.println("Check Dimension " + pass + " fail " + fail);
-			System.out.println();
+			logger.info("Check Dimension " + pass + " fail " + fail);
+			logger.info("");
 
 			checkVariables(nc);
-			System.out.println("Check Variables " + pass + " fail " + fail);
-			System.out.println();
+			logger.info("Check Variables " + pass + " fail " + fail);
+			logger.info("");
 			
 			nc.close();
 			//NetcdfDataset.shutdown();
@@ -542,6 +546,7 @@ public class FileChecker
 
 	public static void main(String[] args) 
 	{
+		PropertyConfigurator.configure("log4j.properties");
 		String fileName = null;
 		
 		if (args.length == 1)
@@ -557,7 +562,7 @@ public class FileChecker
 		ck.openCFxmlFile();
 		ck.check();
 		
-		System.out.println("Totals pass : " + ck.pass + " fail : " + ck.fail);
+		logger.info("Totals pass : " + ck.pass + " fail : " + ck.fail);
 		
 	}
 

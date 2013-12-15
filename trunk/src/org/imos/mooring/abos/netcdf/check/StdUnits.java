@@ -24,28 +24,32 @@ package org.imos.mooring.abos.netcdf.check;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 
 import ucar.nc2.Attribute;
 import ucar.nc2.Variable;
+import ucar.units.NoSuchUnitException;
+import ucar.units.PrefixDBException;
+import ucar.units.ScaledUnit;
+import ucar.units.SpecificationException;
 import ucar.units.StandardUnitDB;
 import ucar.units.Unit;
 import ucar.units.UnitDBException;
+import ucar.units.UnitFormat;
+import ucar.units.UnitFormatManager;
+import ucar.units.UnitParseException;
+import ucar.units.UnitSystemException;
+import ucar.units.UnknownUnit;
 
 public class StdUnits extends Check
 {
-	StandardUnitDB units = null;
+	static Logger logger = Logger.getLogger(StdUnits.class.getName());
+	
+	UnitFormat format = UnitFormatManager.instance();
+	
 	public StdUnits()
 	{
-		try
-		{
-			units = StandardUnitDB.instance();
-		}
-		catch (UnitDBException e)
-		{
-			System.out.println("Cannot find units database, won't check for valid units");
-		}
-		
 	}
 	public PassFail check(Element eElement)
 	{
@@ -56,20 +60,78 @@ public class StdUnits extends Check
 		while (vi.hasNext())
 		{
 			Variable var = (Variable) vi.next();
-			if (!var.isCoordinateVariable())
+			//if (!var.isCoordinateVariable())
 			{
 				Attribute ua = var.findAttribute("units");
-				if ((ua != null) && (units != null))
+				if (ua != null)
 				{
-					Unit u = units.getByName(ua.getStringValue());
-					if (u == null)
+					String unitName = ua.getStringValue();
+					Unit u;
+					try
 					{
-						System.out.println("FAIL::Variable " + var.getShortName() + " Unknown unit : " + ua.getStringValue());
-						
+						logger.debug("UNIT :" + unitName + " ");
+						u = format.parse(unitName);
+						logger.debug(u);
+						if ((u == null) && (!(u instanceof UnknownUnit)))
+						{
+							logger.warn("FAIL::Variable " + var.getShortName() + " Unknown unit : " + ua.getStringValue());
+							
+							result.fail();					
+						}
+						else if (u instanceof ScaledUnit)
+						{
+							ScaledUnit su = (ScaledUnit)u;
+							logger.debug("Scaled Unit " + su.getDerivedUnit());
+
+							Unit u3 = format.parse(su.getDerivedUnit().toString());
+							
+							logger.debug("Derived Scaled Unit " + u3.getClass().getName());
+
+							if (u3 instanceof UnknownUnit)
+							{
+								logger.warn("FAIL::Variable " + var.getShortName() + " Unknown base unit : " + ua.getStringValue());
+								
+								result.fail();
+							}
+						}
+						else							
+							result.pass();						
+					}
+					catch (NoSuchUnitException e)
+					{
+						logger.warn("FAIL::Variable " + var.getShortName() + " NoSuchUnitException : " + ua.getStringValue());
 						result.fail();					
 					}
-					else
-						result.pass();
+					catch (StringIndexOutOfBoundsException e)
+					{
+						logger.warn("FAIL::Variable " + var.getShortName() + " StringIndexOutOfBoundsException : " + ua.getStringValue());
+						result.fail();					
+					}
+					catch (UnitParseException e)
+					{
+						logger.warn("FAIL::Variable " + var.getShortName() + " UnitParseException : " + ua.getStringValue());
+						result.fail();					
+					}
+					catch (SpecificationException e)
+					{
+						logger.warn("FAIL::Variable " + var.getShortName() + "SpecificationException " + ua.getStringValue());
+						result.fail();					
+					}
+					catch (UnitDBException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					catch (PrefixDBException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					catch (UnitSystemException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 			

@@ -25,6 +25,7 @@ package org.imos.mooring.abos.netcdf.check;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 
 import ucar.ma2.DataType;
@@ -35,19 +36,21 @@ import ucar.nc2.dataset.NetcdfDataset;
 
 public class Dimensions extends Check
 {
+	static Logger logger = Logger.getLogger(Dimensions.class.getName());
+	
 	public int checkDimensionVariable(NetcdfDataset nc, Dimension dim)
 	{
 		Variable checkVar = nc.findVariable(dim.getShortName());
 		if (checkVar == null)				
 		{
-			System.out.println("FAIL::Dimension '" + dim.getShortName() + "' has no variable : " + dim.getShortName());
+			logger.warn("FAIL::Dimension '" + dim.getShortName() + "' has no variable : " + dim.getShortName());
 			
 			result.fail();
 			return 0;			
 		}
 		if (!checkVar.isCoordinateVariable())
 		{
-			System.out.println("FAIL::Dimension variable is not a coordinate variable : " + dim.getShortName());
+			logger.warn("FAIL::Dimension variable is not a coordinate variable : " + dim.getShortName());
 			
 			result.fail();
 			return 0;			
@@ -77,7 +80,7 @@ public class Dimensions extends Check
 			Dimension check = ds.findDimension(varName);
 			if (check == null)
 			{
-				System.out.println("FAILED:: " + checkName + " DIMENSION " + varName);
+				logger.warn("FAILED:: " + checkName + " DIMENSION " + varName);
 				result.fail();
 			}
 			else

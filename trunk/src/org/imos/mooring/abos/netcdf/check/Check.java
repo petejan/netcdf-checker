@@ -22,7 +22,10 @@ package org.imos.mooring.abos.netcdf.check;
 //OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
+
+
 import org.w3c.dom.Element;
+import org.apache.log4j.Logger;
 
 import ucar.nc2.dataset.NetcdfDataset;
 
@@ -30,6 +33,7 @@ public abstract class Check
 {
 	NetcdfDataset ds;
 	PassFail result = new PassFail();
+	static Logger logger = Logger.getLogger(Check.class.getName());
 	
 	public void setDataFile(NetcdfDataset ds)
 	{

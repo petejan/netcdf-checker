@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 
 import ucar.nc2.Attribute;
@@ -32,7 +33,8 @@ import ucar.nc2.Variable;
 
 public class AncillaryVariableAttributes extends Check
 {
-
+	static Logger logger = Logger.getLogger(AncillaryVariableAttributes.class.getName());
+	
 	@Override
 	public PassFail check(Element eElement)
 	{
@@ -45,7 +47,7 @@ public class AncillaryVariableAttributes extends Check
 		while (vi.hasNext())
 		{
 			Variable var = (Variable) vi.next();
-			//System.out.println("FIND VAR : " + var.getShortName());
+			//logger.info("FIND VAR : " + var.getShortName());
 			
 			if (!var.isCoordinateVariable())
 			{
@@ -54,15 +56,15 @@ public class AncillaryVariableAttributes extends Check
 				{
 					String ancName = check.getStringValue();
 					Variable ancVar = ds.findVariable(ancName);
-					//System.out.println("adding " + ancName);
+					logger.debug("adding " + ancName);
 					varsAnc.add(ancVar);
 					
 					String varDim = var.getDimensionsString();
 					String ancDim = var.getDimensionsString();
-					// System.out.println("VAR : " + var.getDimensionsString() + " ANC " + ancVar.getDimensionsString());
+					logger.debug("VAR : " + var.getDimensionsString() + " ANC " + ancVar.getDimensionsString());
 					if (!varDim.contentEquals(ancDim))
 					{
-						System.out.println("FAILED:: " + checkName + " VARIABLE " + var.getShortName() + " Ancillary Variable different dimensions");
+						logger.warn("FAILED:: " + checkName + " VARIABLE " + var.getShortName() + " Ancillary Variable different dimensions");
 						result.fail();
 					}
 					else
@@ -77,7 +79,7 @@ public class AncillaryVariableAttributes extends Check
 		while (vi.hasNext())
 		{
 			Variable var = (Variable) vi.next();
-			//System.out.println("CHECH VAR : " + var.getShortName());
+			logger.debug("CHECH VAR : " + var.getShortName());
 			
 			if (!var.isCoordinateVariable())
 			{
@@ -87,7 +89,7 @@ public class AncillaryVariableAttributes extends Check
 					Attribute check = var.findAttribute(varName.trim());
 					if (check == null)
 					{
-						System.out.println("FAILED:: " + checkName + " VARIABLE " + var.getShortName() + " missing ATTRIBUTE " + varName);
+						logger.warn("FAILED:: " + checkName + " VARIABLE " + var.getShortName() + " missing ATTRIBUTE " + varName);
 						result.fail();
 					}
 					else

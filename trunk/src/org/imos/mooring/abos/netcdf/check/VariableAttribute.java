@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 
 import ucar.nc2.Attribute;
@@ -32,6 +33,8 @@ import ucar.nc2.Variable;
 
 public class VariableAttribute extends Check
 {
+	static Logger logger = Logger.getLogger(Time.class.getName());
+	
 	@Override
 	public PassFail check(Element eElement)
 	{
@@ -44,16 +47,16 @@ public class VariableAttribute extends Check
 		while (vi.hasNext())
 		{
 			Variable var = (Variable) vi.next();
-			//System.out.println("FIND VAR : " + var.getShortName());
+			logger.debug("FIND VAR : " + var.getShortName());
 			
-			if (!var.isCoordinateVariable())
+			//if (!var.isCoordinateVariable())
 			{
 				Attribute check = var.findAttribute("ancillary_variables");
 				if (check != null)
 				{
 					String ancName = check.getStringValue();
 					Variable ancVar = ds.findVariable(ancName);
-					//System.out.println("Deleteing " + ancName);
+					logger.debug("Deleteing " + ancName);
 					varsNoAnc.remove(ancVar);				
 				}			
 			}
@@ -64,7 +67,7 @@ public class VariableAttribute extends Check
 		while (vi.hasNext())
 		{
 			Variable var = (Variable) vi.next();
-			//System.out.println("CHECH VAR : " + var.getShortName());
+			logger.debug("CHECH VAR : " + var.getShortName());
 			
 			if (!var.isCoordinateVariable())
 			{
@@ -74,7 +77,7 @@ public class VariableAttribute extends Check
 					Attribute check = var.findAttribute(varName.trim());
 					if (check == null)
 					{
-						System.out.println("FAILED:: " + checkName + " VARIABLE " + var.getShortName() + " missing ATTRIBUTE " + varName);
+						logger.warn("FAILED:: " + checkName + " VARIABLE " + var.getShortName() + " missing ATTRIBUTE " + varName);
 						result.fail();
 					}
 					else
