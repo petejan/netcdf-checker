@@ -106,6 +106,8 @@ public class StandardName extends Check
 	
 					result.fail();					
 				}
+				else
+					result.pass();
 			}
 		}		
 				

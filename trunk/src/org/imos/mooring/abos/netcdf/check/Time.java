@@ -74,9 +74,9 @@ public class Time extends Check
 				Date et = sdf2.parse(timeEnd.getStringValue());
                 logger.info("GLOBAL       :: time start " + sdf.format(st) + " end " + sdf.format(et));
                 
-                if (st.before(startDate))
+                if (st.after(startDate))
                 {
-					logger.debug("FAIL::Global time_coverage_start before timerange in TIME variable");		
+					logger.warn("FAIL::Global time_coverage_start before timerange in TIME variable");		
 					result.fail();
                 }
                 else 
@@ -84,7 +84,7 @@ public class Time extends Check
                 
                 if (et.after(endDate))
                 {
-					logger.debug("FAIL::Global time_coverage_end after timerange in TIME variable");			                	
+					logger.warn("FAIL::Global time_coverage_end after timerange in TIME variable");			                	
 					result.fail();
                 }
                 else 
@@ -92,7 +92,7 @@ public class Time extends Check
 			}
 			catch (ParseException e)
 			{
-				logger.debug("FAIL::Global parse time_coverage_start time_coverage_end check " + e.getMessage());			                	
+				logger.warn("FAIL::Global parse time_coverage_start time_coverage_end check " + e.getMessage());			                	
 				result.fail();
 			}
 		}
@@ -104,7 +104,7 @@ public class Time extends Check
 
 		if (var.findAttribute("units").getStringValue().compareTo("days since 1950-01-01T00:00:00Z") != 0)
 		{
-			logger.debug("FAIL::Variable TIME units not 'days since 1950-01-01T00:00:00Z'");	
+			logger.warn("FAIL::Variable TIME units not 'days since 1950-01-01T00:00:00Z'");	
 			
 			result.fail();
 		}

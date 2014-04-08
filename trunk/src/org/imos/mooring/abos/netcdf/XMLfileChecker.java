@@ -84,7 +84,6 @@ public class XMLfileChecker
 
 				if (nNode.getNodeType() == Node.ELEMENT_NODE)
 				{
-
 					Element eElement = (Element) nNode;
 
 					String checkName = eElement.getAttribute("name");
