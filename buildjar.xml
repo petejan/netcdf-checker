@@ -3,13 +3,14 @@
     <!--this file was created by Eclipse Runnable JAR Export Wizard-->
     <!--ANT 1.7 is required                                        -->
     <target name="create_run_jar">
-        <jar destfile="C:/svn/netcdf-checker/FileChecker.jar" filesetmanifest="mergewithoutmain">
+        <jar destfile="C:/Users/jan079/svn/netcdf-checker/FileChecker.jar" filesetmanifest="mergewithoutmain">
             <manifest>
                 <attribute name="Main-Class" value="org.imos.mooring.abos.netcdf.XMLfileChecker"/>
                 <attribute name="Class-Path" value="."/>
             </manifest>
-            <fileset dir="C:/svn/netcdf-checker/bin"/>
-            <zipfileset excludes="META-INF/*.SF" src="C:/svn/netcdf-checker/lib/netcdfAll-4.3.jar"/>
+            <fileset dir="C:/Users/jan079/svn/netcdf-checker/bin"/>
+            <zipfileset excludes="META-INF/*.SF" src="C:/Users/jan079/svn/netcdf-checker/lib/netcdfAll-4.3.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="C:/Users/jan079/svn/netcdf-checker/lib/log4j-1.2.17.jar"/>
         </jar>
     </target>
 </project>

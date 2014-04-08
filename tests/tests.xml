@@ -1,19 +1,19 @@
 <?xml version="1.0"?>
 <checker_rules xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="checker_rules.xsd">
    <version_number>01</version_number>
-   <last_modified>2013-12-13</last_modified>
+   <last_modified>2014-04-08</last_modified>
    <institution>IMOS</institution>
    <contact>peter.jansen@csiro.au</contact>
 
    <rule name="Check for Global Attributes">
    		<class>org.imos.mooring.abos.netcdf.check.Globals</class>
    		
-   		<attribute>institution</attribute>
    		<attribute>title</attribute>
    		<attribute>institution</attribute>
-   		<attribute>naming_authority</attribute>
-   		<attribute>time_coverage_start</attribute>
-   		<attribute>time_coverage_end</attribute>
+   		<attribute regex="CF-.*|OceanSITES.*|IMOS-.*">Conventions</attribute>
+   		<attribute regex="IMOS">naming_authority</attribute>
+   		<attribute regex="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?Z">time_coverage_start</attribute>
+   		<attribute regex="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?Z">time_coverage_end</attribute>
    		<attribute>author</attribute>
    		<attribute>citation</attribute>
    		<attribute>distribution_statement</attribute>
@@ -40,6 +40,7 @@
    		<convention>OceanSITES.*</convention>
    		
    		<attribute>id</attribute>
+   		<attribute>deployment_number</attribute>
    		<attribute>platform_code</attribute>
    		<attribute>cdm_data_type</attribute>
    		<attribute>source</attribute>
@@ -79,10 +80,11 @@
    		<attribute>data_centre_email</attribute>
    		
    		<attribute>project</attribute>
-   		<attribute>date_created</attribute>
+   		<attribute>date_update</attribute>
    		<attribute>abstract</attribute>
    		<attribute>keywords</attribute>
    		<attribute>acknowledgement</attribute>
+   		<attribute>file_version</attribute>
    		<attribute>principal_investigator</attribute>
    		
    		<attribute>geospatial_lat_units</attribute>
@@ -119,10 +121,9 @@
    		
    		<attribute>sensor_serial_number</attribute>
    		<attribute>units</attribute>
-   		<attribute>valid_min</attribute>
-   		<attribute>valid_max</attribute>
-   		<attribute>_FillValue</attribute>
-   		<attribute>quality_control_set</attribute>
+   		<attribute vartype="required">valid_min</attribute>
+   		<attribute vartype="required">valid_max</attribute>
+   		<attribute vartype="required">_FillValue</attribute>
    </rule>
    <rule name="Check Variable Units attribute">
    		<class>org.imos.mooring.abos.netcdf.check.StdUnits</class>

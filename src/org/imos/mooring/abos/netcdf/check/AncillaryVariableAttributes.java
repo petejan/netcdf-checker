@@ -39,6 +39,7 @@ public class AncillaryVariableAttributes extends Check
 	public PassFail check(Element eElement)
 	{
 		String checkName = eElement.getAttribute("name");
+		
 		List<Variable> vars = ds.getVariables();
 		List<Variable> varsAnc = new ArrayList<Variable>();
 		
@@ -47,10 +48,15 @@ public class AncillaryVariableAttributes extends Check
 		while (vi.hasNext())
 		{
 			Variable var = (Variable) vi.next();
-			//logger.info("FIND VAR : " + var.getShortName());
+			logger.debug("FIND VAR : " + var.getShortName());
 			
 			if (!var.isCoordinateVariable())
 			{
+				List <Attribute> atts = var.getAttributes();
+//				for(Attribute a : atts)
+//				{
+//					logger.debug(" attrib " + a.getShortName());					
+//				}
 				Attribute check = var.findAttribute("ancillary_variables");
 				if (check != null)
 				{

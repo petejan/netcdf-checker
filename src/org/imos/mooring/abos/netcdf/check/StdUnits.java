@@ -104,6 +104,7 @@ public class StdUnits extends Check
 					}
 					catch (StringIndexOutOfBoundsException e)
 					{
+						//e.printStackTrace();
 						logger.warn("FAIL::Variable " + var.getShortName() + " StringIndexOutOfBoundsException : " + ua.getStringValue());
 						result.fail();					
 					}

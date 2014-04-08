@@ -24,16 +24,20 @@ package org.imos.mooring.abos.netcdf.check;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import ucar.nc2.Attribute;
 import ucar.nc2.Variable;
 
 public class VariableAttribute extends Check
 {
-	static Logger logger = Logger.getLogger(Time.class.getName());
+	static Logger logger = Logger.getLogger(VariableAttribute.class.getName());
 	
 	@Override
 	public PassFail check(Element eElement)
@@ -49,7 +53,7 @@ public class VariableAttribute extends Check
 			Variable var = (Variable) vi.next();
 			logger.debug("FIND VAR : " + var.getShortName());
 			
-			//if (!var.isCoordinateVariable())
+			if (!var.isCoordinateVariable())
 			{
 				Attribute check = var.findAttribute("ancillary_variables");
 				if (check != null)
@@ -71,21 +75,80 @@ public class VariableAttribute extends Check
 			
 			if (!var.isCoordinateVariable())
 			{
-				for(int i=0;i<eElement.getElementsByTagName("attribute").getLength();i++)
+				// TODO: check associated variables exists
+				NodeList aN = eElement.getElementsByTagName("attribute");
+				for(int j=0;j<aN.getLength();j++)
 				{
-					String varName = eElement.getElementsByTagName("attribute").item(i).getTextContent();
+					Node nAttribute = aN.item(j);
+					NamedNodeMap nNM = nAttribute.getAttributes();
+					
+					Pattern p = null;
+					String type = null;
+					
+					for(int k=0;k<nNM.getLength();k++)
+					{
+						//System.out.println("nNM " + nNM.item(k).getNodeName());
+						if (nNM.item(k).getNodeName().equals("regex"))
+						{
+							p = Pattern.compile(nNM.item(k).getNodeValue());
+						}
+						if (nNM.item(k).getNodeName().equals("type"))
+						{
+							type = nNM.item(k).getNodeValue().trim();
+						}
+						if (nNM.item(k).getNodeName().equals("vartype"))
+						{
+							type = var.getDataType().toString();
+						}
+					}
+					String varName = nAttribute.getTextContent();
+
 					Attribute check = var.findAttribute(varName.trim());
 					if (check == null)
 					{
-						logger.warn("FAILED:: " + checkName + " VARIABLE " + var.getShortName() + " missing ATTRIBUTE " + varName);
+						logger.warn("FAILED:: " + checkName + " VARIABLE " + var.getShortName() + " ATTRIBUTE " + varName + " does not exist");
 						result.fail();
 					}
 					else
 					{
-						result.pass();
+						if ((p != null) && (check.isString())) // can only really regex a string type
+						{
+							String val = check.getStringValue();
+							if (p.matcher(val).matches())
+							{
+								result.pass();
+							}
+							else
+							{
+								logger.warn("FAILED:: " + checkName + " VARIABLE " + var.getShortName() + " ATTRIBUTE " + varName + " failed regex " + p + " is " + check.getStringValue());
+								result.fail();						
+							}
+						}
+						else if (type != null)
+						{
+							String varType = check.getDataType().toString().trim();
+							if (varType.matches(type))
+							{
+								result.pass();
+							}
+							else
+							{
+								logger.warn("FAILED:: " + checkName + " VARIABLE " + var.getShortName() + " ATTRIBUTE " + varName + " not type " + type + " is " + varType);
+								result.fail();						
+							}
+						}
+						else if (check.isString())
+						{
+							result.pass();
+						}
+						else
+						{
+							logger.warn("FAILED:: " + checkName + " VARIABLE " + var.getShortName() + " ATTRIBUTE " + varName + " not string is " + var.getDataType());
+							result.fail();
+						}
 					}
 				}
-				// TODO: check associated variables exists
+				
 			}
 		}
 				

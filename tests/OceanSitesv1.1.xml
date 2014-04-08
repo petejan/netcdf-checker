@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RULES>
+	<APPLICABLE_IF>
+		<GLOBAL_ATTRIBUTE NAME="data_type" PATTERN="OceanSITES metadata|OceanSITES profile data|OceanSITES vertical profile|OceanSITES time-series data|OceanSITES trajectory data"/>
+A		<GLOBAL_ATTRIBUTE NAME="format_version" VALUE="1.2"/>
+	</APPLICABLE_IF>
+	<MANDATORY>
+		<!-- ==================== -->
+		<!-- Mandatory dimensions -->
+		<!-- ==================== -->
+		<DIMENSION NAME="TIME" VALUE="0"/>
+		<DIMENSION NAME="DEPTH"/>
+		<DIMENSION NAME="LATITUDE"/>
+		<DIMENSION NAME="LONGITUDE"/>
+		<DIMENSION NAME="POSITION"/>
+
+		<!-- =========================== -->
+		<!-- Mandatory global attributes -->
+		<!-- =========================== -->
+		<!-- What -->
+		<GLOBAL_ATTRIBUTE NAME="data_type" PATTERN="OceanSITES metadata|OceanSITES profile data|OceanSITES vertical profile|OceanSITES time-series data|OceanSITES trajectory data"/>
+		<GLOBAL_ATTRIBUTE NAME="format_version" VALUE="1.2"/>		
+		<GLOBAL_ATTRIBUTE NAME="platform_code" />		
+		<GLOBAL_ATTRIBUTE NAME="date_update" PATTERN="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?Z"/>
+		<GLOBAL_ATTRIBUTE NAME="site_code" />
+		<GLOBAL_ATTRIBUTE NAME="data_mode" PATTERN="R|D"/>
+		
+		<!-- Where -->
+		<GLOBAL_ATTRIBUTE NAME="geospatial_lat_min" PATTERN="-?[0-9]+(\.[0-9]+)?.?"/>
+		<GLOBAL_ATTRIBUTE NAME="geospatial_lat_max" PATTERN="-?[0-9]+(\.[0-9]+)?.?"/>
+		<GLOBAL_ATTRIBUTE NAME="geospatial_lon_min" PATTERN="-?[0-9]+(\.[0-9]+)?.?"/>
+		<GLOBAL_ATTRIBUTE NAME="geospatial_lon_max" PATTERN="-?[0-9]+(\.[0-9]+)?.?"/>
+		
+
+		<!-- =================== -->
+		<!-- Mandatory variables -->
+		<!-- =================== -->
+		<!-- time -->
+		<VARIABLE>
+			<IDENTIFY>
+				<NAME VALUE="TIME"/>
+			</IDENTIFY>
+			<MUST_VERIFY>
+				<TYPE VALUE="double"/>
+				<DIMENSION_COUNT VALUE="1"/>
+				<DIMENSION NAME="TIME" RANK="1"/>
+				<ATTRIBUTE NAME="standard_name" VALUE="time"/>
+				<ATTRIBUTE NAME="units" PATTERN="days since 1950-01-01T00:00:00Z"/>
+			</MUST_VERIFY>
+		</VARIABLE>
+		<!-- latitude -->
+		<VARIABLE>
+			<IDENTIFY>
+				<NAME VALUE="LATITUDE"/>
+			</IDENTIFY>
+			<MUST_VERIFY>
+				<TYPE VALUE="float"/>
+				<DIMENSION_COUNT VALUE="1"/>
+				<DIMENSION NAME="LATITUDE" RANK="1"/>
+				<ATTRIBUTE NAME="long_name" VALUE="Latitude of each location"/>
+				<ATTRIBUTE NAME="units" VALUE="degrees_north"/>
+			</MUST_VERIFY>
+		</VARIABLE>
+		<!-- longitude -->
+		<VARIABLE>
+			<IDENTIFY>
+				<NAME VALUE="LONGITUDE"/>
+			</IDENTIFY>
+			<MUST_VERIFY>
+				<TYPE VALUE="float"/>
+				<DIMENSION_COUNT VALUE="1"/>
+				<DIMENSION NAME="LONGITUDE" RANK="1"/>
+				<ATTRIBUTE NAME="long_name" VALUE="Longitude of each location"/>
+				<ATTRIBUTE NAME="units" VALUE="degrees_east"/>				
+			</MUST_VERIFY>
+		</VARIABLE>
+		<!-- DEPTH -->
+		<VARIABLE>
+			<IDENTIFY>
+				<NAME VALUE="DEPTH"/>
+			</IDENTIFY>
+			<MUST_VERIFY>
+				<TYPE VALUE="float"/>
+				<DIMENSION_COUNT VALUE="1"/>
+				<DIMENSION NAME="DEPTH" RANK="1"/>
+				<ATTRIBUTE NAME="long_name" VALUE="Depth of each measurement"/>
+				<ATTRIBUTE NAME="units" VALUE="meters"/>				
+			</MUST_VERIFY>
+		</VARIABLE>
+	</MANDATORY>
+
+	<OPTIONAL>		
+			
+		<!-- ================== -->
+		<!-- Optional variables -->
+		<!-- ================== -->
+		<!--  QC variable -->
+			<VARIABLE>
+				<IDENTIFY>
+					<NAME PATTERN="(?!TIME|DEPTH|POSITION).*_QC" />
+				</IDENTIFY>
+				<MUST_VERIFY>
+					<TYPE VALUE="byte"/>
+					<DIMENSION_COUNT VALUE="2"/>
+					<DIMENSION NAME="TIME" RANK="1"/>
+					<DIMENSION NAME="DEPTH" RANK="2"/>		
+					<ATTRIBUTE NAME="long_name" VALUE="quality flag"/>
+					<ATTRIBUTE NAME="conventions" VALUE="OceanSITES reference table 2"/>
+					<ATTRIBUTE NAME="_FillValue" VALUE="-128"/>
+					<ATTRIBUTE NAME="valid_min" VALUE="0"/>
+					<ATTRIBUTE NAME="valid_max" VALUE="9"/>
+					<ATTRIBUTE NAME="flag_values" VALUE="0, 1, 2, 3, 4, 5, 6, 7, 8, 9"/>
+					<ATTRIBUTE NAME="flag_meanings" VALUE="no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed not_used nominal_value interpolated_value missing_value"/>
+				</MUST_VERIFY>
+			</VARIABLE>		
+			<VARIABLE>
+				<IDENTIFY>
+					<NAME VALUE="TIME_QC" />
+				</IDENTIFY>
+				<MUST_VERIFY>
+					<TYPE VALUE="byte"/>
+					<DIMENSION_COUNT VALUE="1"/>
+					<DIMENSION NAME="TIME" RANK="1"/>	
+					<ATTRIBUTE NAME="long_name" VALUE="quality flag"/>
+					<ATTRIBUTE NAME="conventions" VALUE="OceanSITES reference table 2"/>
+					<ATTRIBUTE NAME="_FillValue" VALUE="-128"/>
+					<ATTRIBUTE NAME="valid_min" VALUE="0"/>
+					<ATTRIBUTE NAME="valid_max" VALUE="9"/>
+					<ATTRIBUTE NAME="flag_values" VALUE="0, 1, 2, 3, 4, 5, 6, 7, 8, 9"/>
+					<ATTRIBUTE NAME="flag_meanings" VALUE="no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed not_used nominal_value interpolated_value missing_value"/>
+				</MUST_VERIFY>
+			</VARIABLE>		
+			<VARIABLE>
+				<IDENTIFY>
+					<NAME VALUE="POSITION_QC" />
+				</IDENTIFY>
+				<MUST_VERIFY>
+					<TYPE VALUE="byte"/>
+					<DIMENSION_COUNT VALUE="1"/>
+					<DIMENSION NAME="POSITION" RANK="1"/>	
+					<ATTRIBUTE NAME="long_name" VALUE="quality flag"/>
+					<ATTRIBUTE NAME="conventions" VALUE="OceanSITES reference table 2"/>
+					<ATTRIBUTE NAME="_FillValue" VALUE="-128"/>
+					<ATTRIBUTE NAME="valid_min" VALUE="0"/>
+					<ATTRIBUTE NAME="valid_max" VALUE="9"/>
+					<ATTRIBUTE NAME="flag_values" VALUE="0, 1, 2, 3, 4, 5, 6, 7, 8, 9"/>
+					<ATTRIBUTE NAME="flag_meanings" VALUE="no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed not_used nominal_value interpolated_value missing_value"/>
+				</MUST_VERIFY>
+			</VARIABLE>		
+			<VARIABLE>
+				<IDENTIFY>
+					<NAME VALUE="DEPTH_QC" />
+				</IDENTIFY>
+				<MUST_VERIFY>
+					<TYPE VALUE="byte"/>
+					<DIMENSION_COUNT VALUE="1"/>
+					<DIMENSION NAME="DEPTH" RANK="1"/>	
+					<ATTRIBUTE NAME="long_name" VALUE="quality flag"/>
+					<ATTRIBUTE NAME="conventions" VALUE="OceanSITES reference table 2"/>
+					<ATTRIBUTE NAME="_FillValue" VALUE="-128"/>
+					<ATTRIBUTE NAME="valid_min" VALUE="0"/>
+					<ATTRIBUTE NAME="valid_max" VALUE="9"/>
+					<ATTRIBUTE NAME="flag_values" VALUE="0, 1, 2, 3, 4, 5, 6, 7, 8, 9"/>
+					<ATTRIBUTE NAME="flag_meanings" VALUE="no_qc_performed good_data probably_good_data bad_data_that_are_potentially_correctable bad_data value_changed not_used nominal_value interpolated_value missing_value"/>
+				</MUST_VERIFY>
+			</VARIABLE>		
+			
+
+		<!--  DM variable -->
+			<VARIABLE>
+				<IDENTIFY>
+					<NAME PATTERN=".*_DM" />
+				</IDENTIFY>
+				<MUST_VERIFY>
+					<TYPE VALUE="char"/>
+					<DIMENSION_COUNT VALUE="2"/>
+					<DIMENSION NAME="TIME" RANK="1"/>
+					<DIMENSION NAME="DEPTH" RANK="2"/>		
+					<ATTRIBUTE NAME="long_name" VALUE="method of data processing"/>
+					<ATTRIBUTE NAME="conventions" VALUE="OceanSITES reference table 5"/>
+					<ATTRIBUTE NAME="_FillValue" VALUE=" "/>
+					<ATTRIBUTE NAME="flag_values" />
+					<ATTRIBUTE NAME="flag_meanings" VALUE="realtime post-recovery delayed-mode mixed"/>
+				</MUST_VERIFY>
+			</VARIABLE>		
+
+		<!--  UNCERTAINTY variable -->
+			<VARIABLE>
+				<IDENTIFY>
+					<NAME PATTERN=".*_UNCERTAINTY" />
+				</IDENTIFY>
+				<MUST_VERIFY>
+					<TYPE VALUE="float"/>
+					<DIMENSION_COUNT VALUE="2"/>
+					<DIMENSION NAME="TIME" RANK="1"/>
+					<DIMENSION NAME="DEPTH" RANK="2"/>		
+					<ATTRIBUTE NAME="long_name" VALUE="uncertainty"/>
+					<ATTRIBUTE NAME="_FillValue"/>
+					<ATTRIBUTE NAME="units"/>
+				</MUST_VERIFY>
+			</VARIABLE>	
+	
+			<!--  variable -->
+			<VARIABLE>
+				<IDENTIFY>
+					<NAME PATTERN="(?!TIME|LATITUDE|LONGITUDE|DEPTH|.*_QC|.*_DM|.*_UNCERTAINTY).*" />
+				</IDENTIFY>
+				<MUST_VERIFY>
+					<TYPE VALUE="float"/>
+					<DIMENSION_COUNT VALUE="2"/>
+					<DIMENSION NAME="TIME" RANK="1"/>
+					<DIMENSION NAME="DEPTH" RANK="2"/>		
+					<ATTRIBUTE NAME="standard_name"/>
+					<ATTRIBUTE NAME="_FillValue"/>
+					<ATTRIBUTE NAME="units"/>
+				</MUST_VERIFY>
+			</VARIABLE>							
+				
+	</OPTIONAL>
+
+</RULES>
+
+
+

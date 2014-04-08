@@ -22,8 +22,13 @@ package org.imos.mooring.abos.netcdf.check;
 //OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
+import java.util.regex.Pattern;
+
 import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import ucar.nc2.Attribute;
 import ucar.nc2.dataset.NetcdfDataset;
@@ -42,9 +47,29 @@ public class Globals extends Check
 	{
 		String checkName = eElement.getAttribute("name");
 		
-		for(int i=0;i<eElement.getElementsByTagName("attribute").getLength();i++)
+		NodeList aN = eElement.getElementsByTagName("attribute");
+		for(int i=0;i<aN.getLength();i++)
 		{
-			String varName = eElement.getElementsByTagName("attribute").item(i).getTextContent();
+			Node nAttribute = aN.item(i);
+			NamedNodeMap nNM = nAttribute.getAttributes();
+			
+			Pattern p = null;
+			String type = null;
+			
+			for(int j=0;j<nNM.getLength();j++)
+			{
+				//System.out.println("nNM " + nNM.item(j).getNodeName());
+				if (nNM.item(j).getNodeName().equals("regex"))
+				{
+					p = Pattern.compile(nNM.item(j).getNodeValue());
+				}
+				if (nNM.item(j).getNodeName().equals("type"))
+				{
+					type = nNM.item(j).getNodeValue();
+				}
+			}
+			String varName = nAttribute.getTextContent();
+
 			Attribute check = ds.findGlobalAttribute(varName.trim());
 			if (check == null)
 			{
@@ -53,7 +78,32 @@ public class Globals extends Check
 			}
 			else
 			{
-				if (check.isString())
+				if ((p != null) && (check.isString())) // can only really regex a string type
+				{
+					String val = check.getStringValue();
+					if (p.matcher(val).matches())
+					{
+						result.pass();
+					}
+					else
+					{
+						logger.warn("FAILED:: " + checkName + " ATTRIBUTE " + varName + " failed regex " + p + " is " + check.getStringValue());
+						result.fail();						
+					}
+				}
+				else if (type != null)
+				{
+					if (check.getDataType().toString().equals(type))
+					{
+						result.pass();
+					}
+					else
+					{
+						logger.warn("FAILED:: " + checkName + " ATTRIBUTE " + varName + " not type " + type);
+						result.fail();						
+					}
+				}
+				else if (check.isString())
 				{
 					result.pass();
 				}
