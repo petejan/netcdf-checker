@@ -7,6 +7,6 @@
 			<attribute name="javadoc_location" value="http://www.unidata.ucar.edu/software/thredds/current/netcdf-java/v4.3/javadoc/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/log4j-1.2.17.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/log4j-1.2.17.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
