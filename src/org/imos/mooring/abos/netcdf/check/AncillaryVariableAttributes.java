@@ -21,13 +21,17 @@ package org.imos.mooring.abos.netcdf.check;
 //OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
 //OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 
+import ucar.ma2.Array;
 import ucar.nc2.Attribute;
 import ucar.nc2.Variable;
 
@@ -104,6 +108,25 @@ public class AncillaryVariableAttributes extends Check
 					}
 				}
 				// TODO: check associated variables exists
+				Attribute ln = var.findAttribute("long_name");
+				if (ln.getStringValue().startsWith(("quality flag")))
+				{
+					Set<Byte> list = new HashSet<Byte>();
+					try
+					{
+						Array a = var.read();
+						while(a.hasNext())
+						{
+							list.add(a.nextByte());
+						}
+						logger.info("flag values " + list);
+					}
+					catch (IOException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 			}
 		}
 				

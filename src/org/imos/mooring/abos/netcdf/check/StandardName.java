@@ -37,6 +37,7 @@ import org.w3c.dom.NodeList;
 
 import ucar.nc2.Attribute;
 import ucar.nc2.Variable;
+import ucar.nc2.dataset.NetcdfDataset;
 
 public class StandardName extends Check
 {
@@ -46,12 +47,20 @@ public class StandardName extends Check
 	
 	public StandardName()
 	{
+	}
+	
+	public void setDataFile(NetcdfDataset ds)
+	{
+		this.ds = ds;
+		
 		// Read the standard names table, download the XML file from
 		// http://cf-pcmdi.llnl.gov/documents/cf-standard-names
 
 		try
 		{
-			File fXmlFile = new File("cf-standard-name-table.xml");
+			File fXmlFile = new File(auxFilePath + File.separator + "cf-standard-name-table.xml");
+			logger.debug("xml file " + fXmlFile.getAbsolutePath());
+			
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			Document doc = dBuilder.parse(fXmlFile);

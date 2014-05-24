@@ -21,8 +21,7 @@ package org.imos.mooring.abos.netcdf.check;
 //OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, 
 //OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
-
+import java.io.File;
 
 import org.w3c.dom.Element;
 import org.apache.log4j.Logger;
@@ -31,6 +30,7 @@ import ucar.nc2.dataset.NetcdfDataset;
 
 public abstract class Check
 {
+	File auxFilePath = new File (".");
 	NetcdfDataset ds;
 	PassFail result = new PassFail();
 	static Logger logger = Logger.getLogger(Check.class.getName());
@@ -38,6 +38,13 @@ public abstract class Check
 	public void setDataFile(NetcdfDataset ds)
 	{
 		this.ds = ds;
+	}
+	
+	public void setAuxFilePath(File path)
+	{
+		logger.debug("aux file path : " + path);
+		
+		auxFilePath = path;
 	}
 	
 	public abstract PassFail check(Element eElement);

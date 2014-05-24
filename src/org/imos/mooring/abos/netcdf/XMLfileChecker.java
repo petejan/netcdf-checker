@@ -64,6 +64,8 @@ public class XMLfileChecker
 			String[] convention = conventions.split("[;,]");
 
 			File fXmlFile = new File(checkRules.get(0));
+			File testPath = fXmlFile.getParentFile();
+			logger.debug("testPath " + testPath);
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			Document doc = dBuilder.parse(fXmlFile);
@@ -111,6 +113,7 @@ public class XMLfileChecker
 					if (bConvention)
 					{
 						Check agent = (Check) Class.forName(checkClassName).newInstance();
+						agent.setAuxFilePath(testPath);
 						
 						agent.setDataFile(nc);
 						PassFail test = agent.check(eElement);
