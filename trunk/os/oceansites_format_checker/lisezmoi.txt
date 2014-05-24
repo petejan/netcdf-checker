@@ -1,0 +1,69 @@
+README : CONTROLE DE FORMAT NETCDF
+==================================
+
+Cette note constitue le mini-guide de l'application de contrôle de format netcdf.
+Elle en decrit succintement l'installation, la configuration et l'utilisation.
+
+
+I) INSTALLATION
+L'application de contrôle de format netcdf est fournie sous forme d'une archive
+FormatControl.tar.gz
+L'installation de l'application consiste donc simplement à desarchiver ce fichier :
+- sous Unix :
+  gzip -d FormatControl.tar.gz
+  tar xvf FormatControl.tar.gz
+- sous Windows :
+  il est préférable d'utiliser une application de gestion d'archive telle que winzip,
+  7zip, winrar, ...
+
+
+II) CONFIGURATION
+La configuration de l'application consiste à indiquer les chemins d'accès de l'application
+elle-même, et de java
+- sous Unix :
+  Editer le fichier control.csh
+  Modifier la section Configuration :
+      JAVA_HOME doit indiquer le chemin d'accès de JRE (java runtime environment)
+      JAVA_BIN doit indiquer le chemin d'accès aux binaires java
+      EXE doit indiquer le chemin d'accès à l'application elle-même
+- sous Windows :
+  Editer le fichier control.bat
+  Modifier la section Configuration :
+      JAVA_HOME doit indiquer le chemin d'accès de JRE (java runtime environment)
+      JAVA_BIN doit indiquer le chemin d'accès aux binaires java
+      DISK doit indiquer le nom du disque du chemin d'accès à l'application elle-même
+      EXE doit indiquer le chemin d'accès à l'application elle-même
+
+
+III) UTILISATION
+Pour utiliser l'application, il suffit d'appeler le script de lancement (control.csh sous
+Unix ou control.bat sous Windows) avec en paramètre le nom complet (avec le chemin) du
+fichier à contrôler.
+Sous Windows, il est également possible depuis l'explorateur windows de glisser-déposer
+le fichier à contrôler sur le script control.bat.
+L'application produit un rapport d'execution au format XML indiquant les éventuelles erreurs
+de format rencontrées et in-fine si le fichier est correct ou non (balise "compliant")
+
+
+IV) PROBLEMES
+- "No rules file can be applied to the netcdf file"
+  L'application de contrôle de format est capable d'analyser différents formats Netcdf. Pour
+  chaque format, les contrôle a effectuer sont décrits dans un fichier de règles externe. Pour
+  savoir quel fichier de règles appliquer, l'application cherche dans les éléments du fichier
+  netcdf (attributs globaux et/ou variables) son type et son numéro de version. Ce message
+  est obtenu quand ces élements ne peuvent être trouvés.
+  Par exemple pour pouvoir contrôler un fichier OCO maillé droit 1.2, le fichier à contrôler
+  doit, à minima, avoir un attribut global "data_type" valant "OCO straight grid" et un
+  attribut global "format_version" valant "1.2".
+
+
+V) FORMATS SUPPORTES PAR LE VALIDATEUR
+ - OceanSITES metadata		: 1.0 à 1.1
+ - OceanSITES profile data	: 1.0 à 1.1
+ - OceanSITES vertical profile  : 1.0 à 1.1
+ - OceanSITES time-series data  : 1.0 à 1.1
+ - OceanSITES trajectory data	: 1.0 à 1.1
+ - OCO oriented grid            : 1.0 à 1.3.1
+ - OCO spectra 1D               : 1.1
+ - OCO spectra 2D               : 1.1
+ - OCO straight grid            : 1.0 à 1.4
