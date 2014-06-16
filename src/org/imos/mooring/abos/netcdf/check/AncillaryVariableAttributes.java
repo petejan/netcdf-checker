@@ -119,7 +119,7 @@ public class AncillaryVariableAttributes extends Check
 						{
 							list.add(a.nextByte());
 						}
-						logger.info("flag values " + list);
+						logger.info( var.getShortName() + " : flag values " + list);
 					}
 					catch (IOException e)
 					{
