@@ -90,7 +90,9 @@ public class XMLfileChecker
 
 					String checkName = eElement.getAttribute("name");
 					String checkClassName = eElement.getElementsByTagName("class").item(0).getTextContent();
-					logger.info("class : " + checkClassName + " : " + checkName);
+					
+					logger.debug("class : " + checkClassName + " : " + checkName);
+
 					NodeList checkConvention = eElement.getElementsByTagName("convention");
 					boolean bConvention = true;
 					if (checkConvention.getLength() > 0)
@@ -112,6 +114,8 @@ public class XMLfileChecker
 										
 					if (bConvention)
 					{
+						logger.info("class : " + checkClassName + " : " + checkName);
+
 						Check agent = (Check) Class.forName(checkClassName).newInstance();
 						agent.setAuxFilePath(testPath);
 						

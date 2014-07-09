@@ -106,12 +106,32 @@ public class StandardName extends Check
 			Attribute sn = var.findAttribute("standard_name");
 			if (sn != null)
 			{
+				String name = sn.getStringValue();
+				// check for standard_name modifiers first
+				int i = name.lastIndexOf("status_flag");
+				if (i < 0)
+				{
+					i = name.lastIndexOf("standard_error");
+				}
+				if (i < 0)
+				{
+					i = name.lastIndexOf("number_of_observations");
+				}
+				if (i < 0)
+				{
+					i = name.lastIndexOf("detection_minimum");
+				}
+				if (i > 0)
+				{
+					name = name.substring(0, i - 1).trim();
+				}
+				
 				// Check standard_name for a unit in the cf conventions
-				String cfUnit = cfNames.get(sn.getStringValue());
-				logger.debug("VARIABLE STD-NAME: " + var.getShortName() + " std_name " + sn.getStringValue() +" standard name CF Unit " + cfUnit);
+				String cfUnit = cfNames.get(name);
+				logger.debug("VARIABLE STD-NAME: " + var.getShortName() + " std_name " + name +" standard name CF Unit " + cfUnit);
 				if (cfUnit == null)
 				{
-					logger.warn("FAIL::Variable " + var.getShortName() + " not standard name : " + sn.getStringValue());
+					logger.warn("FAIL::Variable " + var.getShortName() + " not standard name : " + name);
 	
 					result.fail();					
 				}
