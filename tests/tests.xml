@@ -131,7 +131,6 @@
 		<convention>IMOS.*</convention>
 
 		<attribute>deployment_code</attribute>
-		<attribute>deployment_number</attribute>
 		<attribute>platform_code</attribute>
 		<attribute>site_code</attribute>
 
@@ -139,7 +138,7 @@
 		<attribute>data_centre_email</attribute>
 
 		<attribute>project</attribute>
-		<attribute>date_update</attribute>
+
 		<attribute>abstract</attribute>
 		<attribute>keywords</attribute>
 		<attribute>acknowledgement</attribute>
