@@ -16,7 +16,7 @@
 			<arguments>
 				<dictionary>
 					<key>LaunchConfigHandle</key>
-					<value>&lt;project&gt;/.externalToolBuilders/checker.launch</value>
+					<value>&lt;project&gt;/.externalToolBuilders/netcdf-checker buildjar.xml [Builder].launch</value>
 				</dictionary>
 			</arguments>
 		</buildCommand>

@@ -2,7 +2,10 @@ package org.imos.mooring.abos.netcdf;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -13,12 +16,15 @@ import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.imos.mooring.abos.netcdf.check.Check;
 import org.imos.mooring.abos.netcdf.check.PassFail;
+
+import org.jfree.util.Log;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import ucar.nc2.Attribute;
+import ucar.nc2.Variable;
 import ucar.nc2.dataset.NetcdfDataset;
 
 // Copyright (c) 2013, Peter Jansen
@@ -47,6 +53,8 @@ import ucar.nc2.dataset.NetcdfDataset;
 public class XMLfileChecker
 {
 	String fileName;
+	HashMap <String, Boolean> checkedList = new HashMap<String, Boolean>();
+	
 	static Logger logger = Logger.getLogger(XMLfileChecker.class);
 	
 	public void check(String f)
@@ -58,6 +66,28 @@ public class XMLfileChecker
 			
 			NetcdfDataset nc = NetcdfDataset.acquireDataset(fileName, null); 
 			
+			// create a full list of variable attribues
+			for(Variable v : nc.getVariables())
+			{
+				for(Attribute a : v.getAttributes())
+				{
+					if (!a.getShortName().startsWith("_"))
+						checkedList.put(v.getShortName() + ":" + a.getShortName() , false);
+				}				
+			}
+			for(Attribute a : nc.getGlobalAttributes())
+			{
+				if (!a.getShortName().startsWith("_"))
+					checkedList.put("(global):" + a.getShortName(), false);							
+			}
+			SortedSet<String> keys = new TreeSet<String>(checkedList.keySet());
+			
+//			for(String va : keys)
+//			{
+//				logger.debug("All atts " + va);
+//			}
+
+			// find which conventions are being used
 			Attribute attConventions = nc.findGlobalAttributeIgnoreCase("Conventions");
 			String conventions = attConventions.getStringValue();
 			logger.info("File Conventions : " + conventions);
@@ -67,6 +97,7 @@ public class XMLfileChecker
 			
 			String[] convention = conventions.split(split);
 
+			// read the XML file for the checked to do
 			File fXmlFile = new File(checkRules.get(0));
 			File testPath = fXmlFile.getParentFile();
 			logger.debug("testPath " + testPath);
@@ -121,6 +152,7 @@ public class XMLfileChecker
 						logger.info("class : " + checkClassName + " : " + checkName);
 
 						Check agent = (Check) Class.forName(checkClassName).newInstance();
+						agent.setCheckedList(checkedList);
 						agent.setAuxFilePath(testPath);
 						
 						agent.setDataFile(nc);
@@ -129,7 +161,18 @@ public class XMLfileChecker
 						logger.info("Test Result : " + checkName + " " + test + "\n");
 						result.add(test);
 					}
-				}
+				}				
+			}
+			// print attributes checked
+			for(String va : keys)
+			{
+				if (checkedList.get(va))
+					logger.debug("Checked " + va);
+			}
+			for(String va : keys)
+			{
+				if (!checkedList.get(va))
+					logger.info("Unchecked " + va);
 			}
 		}
 		catch (Exception e)

@@ -27,9 +27,13 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import ucar.ma2.Array;
 import ucar.nc2.Attribute;
@@ -42,6 +46,8 @@ public class AncillaryVariableAttributes extends Check
 	@Override
 	public PassFail check(Element eElement)
 	{
+		boolean option = false;
+		
 		String checkName = eElement.getAttribute("name");
 		
 		List<Variable> vars = ds.getVariables();
@@ -52,7 +58,7 @@ public class AncillaryVariableAttributes extends Check
 		while (vi.hasNext())
 		{
 			Variable var = (Variable) vi.next();
-			logger.debug("FIND VAR : " + var.getShortName());
+			//logger.debug("FIND VAR : " + var.getShortName());
 			
 			if (!var.isCoordinateVariable())
 			{
@@ -66,12 +72,12 @@ public class AncillaryVariableAttributes extends Check
 				{
 					String ancName = check.getStringValue();
 					Variable ancVar = ds.findVariable(ancName);
-					logger.debug("adding " + ancName);
+					//logger.debug("adding " + ancName);
 					varsAnc.add(ancVar);
 					
 					String varDim = var.getDimensionsString();
 					String ancDim = var.getDimensionsString();
-					logger.debug("VAR : " + var.getDimensionsString() + " ANC " + ancVar.getDimensionsString());
+					//logger.debug("VAR : " + var.getDimensionsString() + " ANC " + ancVar.getDimensionsString());
 					if (!varDim.contentEquals(ancDim))
 					{
 						logger.warn("FAILED:: " + checkName + " VARIABLE " + var.getShortName() + " Ancillary Variable different dimensions");
@@ -89,22 +95,84 @@ public class AncillaryVariableAttributes extends Check
 		while (vi.hasNext())
 		{
 			Variable var = (Variable) vi.next();
-			logger.debug("CHECH VAR : " + var.getShortName());
+			//logger.debug("CHECH VAR : " + var.getShortName());
 			
 			if (!var.isCoordinateVariable())
 			{
-				for(int i=0;i<eElement.getElementsByTagName("attribute").getLength();i++)
+				NodeList aN = eElement.getElementsByTagName("attribute");
+				for(int j=0;j<aN.getLength();j++)
 				{
-					String varName = eElement.getElementsByTagName("attribute").item(i).getTextContent();
+					Node nAttribute = aN.item(j);
+					NamedNodeMap nNM = nAttribute.getAttributes();
+					
+					Pattern p = null;
+					String type = null;
+					
+					for(int k=0;k<nNM.getLength();k++)
+					{
+						//System.out.println("nNM " + nNM.item(k).getNodeName());
+						if (nNM.item(k).getNodeName().equals("regex"))
+						{
+							p = Pattern.compile(nNM.item(k).getNodeValue());
+						}
+						if (nNM.item(k).getNodeName().equals("type"))
+						{
+							type = nNM.item(k).getNodeValue().trim();
+						}
+						if (nNM.item(k).getNodeName().equals("vartype"))
+						{
+							type = var.getDataType().toString();
+						}
+						if (nNM.item(k).getNodeName().equals("optional"))
+						{
+							String sOption = nNM.item(k).getNodeValue();
+							//logger.debug(checkName + " " +  var.getShortName() + " " + " option " + sOption);
+							if (Integer.parseInt(sOption) > 0)
+							{					
+								option = true;
+							}
+						}
+						else
+						{
+							option = false;
+						}
+					}
+					String varName = nAttribute.getTextContent();
+
 					Attribute check = var.findAttribute(varName.trim());
 					if (check == null)
 					{
-						logger.warn("FAILED:: " + checkName + " VARIABLE " + var.getShortName() + " missing ATTRIBUTE " + varName);
-						result.fail();
+						if (!option)
+						{
+							logger.warn("FAILED:: " + checkName + " VARIABLE " + var.getShortName() + " missing ATTRIBUTE " + varName);
+							result.fail();
+						}
 					}
 					else
 					{
-						result.pass();
+						//logger.debug("Checking " + var.getShortName() + ":" + check.getShortName());
+						list.put(var.getShortName() + ":" + check.getShortName(), true);
+
+						if ((p != null) && (check.isString())) // can only really regex a string type
+						{
+							String val = check.getStringValue();
+							if (p.matcher(val).matches())
+							{
+								result.pass();
+							}
+							else
+							{
+								if (!option)
+								{	
+									logger.warn("FAILED:: " + checkName + " VARIABLE " + var.getShortName() + " ATTRIBUTE " + varName + " failed regex " + p + " is " + check.getStringValue());
+									result.fail();
+								}
+							}
+						}					
+						else
+						{
+							result.pass();
+						}
 					}
 				}
 				// TODO: check associated variables exists
@@ -125,6 +193,14 @@ public class AncillaryVariableAttributes extends Check
 					{
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+					}
+				}
+				else
+				{
+					if (!option)
+					{
+						logger.warn("FAILED:: " + checkName + " VARIABLE " + var.getShortName() + " long_name does not start with quality flag");
+						result.fail();
 					}
 				}
 			}
