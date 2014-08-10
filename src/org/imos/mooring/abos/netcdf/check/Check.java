@@ -22,6 +22,8 @@ package org.imos.mooring.abos.netcdf.check;
 //OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.w3c.dom.Element;
 import org.apache.log4j.Logger;
@@ -34,6 +36,7 @@ public abstract class Check
 	NetcdfDataset ds;
 	PassFail result = new PassFail();
 	static Logger logger = Logger.getLogger(Check.class.getName());
+	HashMap <String, Boolean>list;
 	
 	public void setDataFile(NetcdfDataset ds)
 	{
@@ -45,6 +48,11 @@ public abstract class Check
 		logger.debug("aux file path : " + path);
 		
 		auxFilePath = path;
+	}
+	
+	public void setCheckedList(HashMap <String, Boolean>list)
+	{
+		this.list = list;		
 	}
 	
 	public abstract PassFail check(Element eElement);

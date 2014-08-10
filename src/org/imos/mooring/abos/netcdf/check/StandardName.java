@@ -106,6 +106,8 @@ public class StandardName extends Check
 			Attribute sn = var.findAttribute("standard_name");
 			if (sn != null)
 			{
+				list.put(var.getShortName() + ":" + sn.getShortName(), true);
+
 				String name = sn.getStringValue();
 				// check for standard_name modifiers first
 				int i = name.lastIndexOf("status_flag");

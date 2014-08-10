@@ -71,9 +71,9 @@ public class StdUnits extends Check
 					Unit u;
 					try
 					{
-						logger.debug("UNIT :" + unitName + " ");
+						//logger.debug("UNIT :" + unitName + " ");
 						u = format.parse(unitName);
-						logger.debug(u);
+						//logger.debug(u);
 						if ((u == null) && (!(u instanceof UnknownUnit)))
 						{
 							logger.warn("FAIL::Variable " + var.getShortName() + " Unknown unit : " + ua.getStringValue());
@@ -83,11 +83,11 @@ public class StdUnits extends Check
 						else if (u instanceof ScaledUnit)
 						{
 							ScaledUnit su = (ScaledUnit)u;
-							logger.debug("Scaled Unit " + su.getDerivedUnit());
+							//logger.debug("Scaled Unit " + su.getDerivedUnit());
 
 							Unit u3 = format.parse(su.getDerivedUnit().toString());
 							
-							logger.debug("Derived Scaled Unit " + u3.getClass().getName());
+							//logger.debug("Derived Scaled Unit " + u3.getClass().getName());
 
 							if (u3 instanceof UnknownUnit)
 							{

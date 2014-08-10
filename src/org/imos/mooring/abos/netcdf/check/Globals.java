@@ -36,6 +36,7 @@ import ucar.nc2.dataset.NetcdfDataset;
 public class Globals extends Check
 {
 	static Logger logger = Logger.getLogger(Globals.class.getName());
+	boolean option = false;
 	
 	public Globals()
 	{
@@ -51,11 +52,14 @@ public class Globals extends Check
 		for(int i=0;i<aN.getLength();i++)
 		{
 			Node nAttribute = aN.item(i);
+
 			NamedNodeMap nNM = nAttribute.getAttributes();
 			
 			Pattern p = null;
 			String type = null;
-			
+
+			String varName = nAttribute.getTextContent();
+
 			for(int j=0;j<nNM.getLength();j++)
 			{
 				//System.out.println("nNM " + nNM.item(j).getNodeName());
@@ -67,17 +71,36 @@ public class Globals extends Check
 				{
 					type = nNM.item(j).getNodeValue();
 				}
+				if (nNM.item(j).getNodeName().equals("optional"))
+				{
+					String sOption = nNM.item(j).getNodeValue();
+					// logger.debug(checkName + " " + varName + " " + " option " + sOption);
+					if (Integer.parseInt(sOption) > 0)
+					{					
+						option = true;
+					}
+				}
+				else
+				{
+					option = false;
+				}
 			}
-			String varName = nAttribute.getTextContent();
-
 			Attribute check = ds.findGlobalAttribute(varName.trim());
 			if (check == null)
 			{
-				logger.warn("FAILED:: " + checkName + " ATTRIBUTE " + varName);
-				result.fail();
+				if (!option)
+				{
+					logger.warn("FAILED:: " + checkName + " ATTRIBUTE " + varName);
+					result.fail();
+				}
 			}
 			else
 			{
+//				String s = "(global):" + check.getShortName();
+//				logger.debug("GLOBAL: add to list " + s + " list " + list.get(s));
+				
+				list.put("(global):" + check.getShortName(), true);
+
 				if ((p != null) && (check.isString())) // can only really regex a string type
 				{
 					String val = check.getStringValue();
@@ -87,8 +110,11 @@ public class Globals extends Check
 					}
 					else
 					{
-						logger.warn("FAILED:: " + checkName + " ATTRIBUTE " + varName + " failed regex " + p + " is " + check.getStringValue());
-						result.fail();						
+						if (!option)
+						{
+							logger.warn("FAILED:: " + checkName + " ATTRIBUTE " + varName + " failed regex " + p + " is " + check.getStringValue());
+							result.fail();
+						}
 					}
 				}
 				else if (type != null)
@@ -99,8 +125,11 @@ public class Globals extends Check
 					}
 					else
 					{
-						logger.warn("FAILED:: " + checkName + " ATTRIBUTE " + varName + " not type " + type);
-						result.fail();						
+						if (!option)
+						{
+							logger.warn("FAILED:: " + checkName + " ATTRIBUTE " + varName + " not type " + type);
+							result.fail();
+						}
 					}
 				}
 				else if (check.isString())
@@ -109,8 +138,11 @@ public class Globals extends Check
 				}
 				else
 				{
-					logger.warn("FAILED:: " + checkName + " ATTRIBUTE " + varName + " not string");
-					result.fail();
+					if (!option)
+					{
+						logger.warn("FAILED:: " + checkName + " ATTRIBUTE " + varName + " not string");
+						result.fail();
+					}
 				}
 			}
 		}

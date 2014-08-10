@@ -102,9 +102,9 @@ public class Time extends Check
 			e.printStackTrace();
 		}
 
-		if (var.findAttribute("units").getStringValue().compareTo("days since 1950-01-01T00:00:00Z") != 0)
+		if (!var.findAttribute("units").getStringValue().matches("days since 1950-01-01[T ]00:00:00 UTC"))
 		{
-			logger.warn("FAIL::Variable TIME units not 'days since 1950-01-01T00:00:00Z'");	
+			logger.warn("FAIL::Variable TIME units not 'days since 1950-01-01T00:00:00 UTC' is '" + var.findAttribute("units").getStringValue() + "'");	
 			
 			result.fail();
 		}

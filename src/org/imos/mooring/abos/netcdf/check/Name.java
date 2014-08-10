@@ -32,6 +32,8 @@ public class Name extends Check
 			else
 			{
 				sn = var.findAttribute("long_name");
+				list.put(var.getShortName() + ":" + sn.getShortName(), true);
+
 				if (sn != null)
 				{
 					result.pass();

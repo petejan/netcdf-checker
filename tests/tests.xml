@@ -9,22 +9,16 @@
 	<rule name="Check for Global Attributes">
 		<class>org.imos.mooring.abos.netcdf.check.Globals</class>
 
-		<attribute>netcdf_version</attribute>
+		<attribute  optional="1">netcdf_version</attribute>
 
-		<attribute>title</attribute>
-		<attribute>institution</attribute>
 		<attribute regex="CF-.*|OceanSITES.*|IMOS-.*">Conventions</attribute>
-		<attribute regex="IMOS">naming_authority</attribute>
-		<attribute
-			regex="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?Z">time_coverage_start</attribute>
-		<attribute
-			regex="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?Z">time_coverage_end</attribute>
-		<attribute>author</attribute>
+		<attribute regex="IMOS|OceanSITES">naming_authority</attribute>
+		<attribute regex="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?Z">time_coverage_start</attribute>
+		<attribute regex="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?Z">time_coverage_end</attribute>
+
 		<attribute>citation</attribute>
 		<attribute>distribution_statement</attribute>
 		<attribute>history</attribute>
-
-		<attribute>site_code</attribute>
 	</rule>
 	<rule name="Check for OceanSITES global GDAC attribute">
 		<class>org.imos.mooring.abos.netcdf.check.Globals</class>
@@ -40,10 +34,8 @@
 		<attribute>geospatial_vertical_min</attribute>
 		<attribute>geospatial_vertical_max</attribute>
 
-		<attribute
-			regex="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?Z">time_coverage_start</attribute>
-		<attribute
-			regex="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?Z">time_coverage_end</attribute>
+		<attribute regex="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?Z">time_coverage_start</attribute>
+		<attribute regex="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?Z">time_coverage_end</attribute>
 
 		<attribute>data_type</attribute>
 		<attribute>format_version</attribute>
@@ -54,47 +46,50 @@
 		<class>org.imos.mooring.abos.netcdf.check.Globals</class>
 		<convention>OceanSITES.*</convention>
 
-		<attribute>title</attribute>
-		<attribute>id</attribute>
-		<attribute>Conventions</attribute>
-		<attribute>history</attribute>
+		<attribute optional="1">title</attribute>
+		<attribute optional="1">Conventions</attribute>
+		<attribute optional="1">history</attribute>
 	</rule>
 
 	<rule name="Check for OceanSITES global CF attribute">
 		<class>org.imos.mooring.abos.netcdf.check.Globals</class>
 		<convention>OceanSITES.*</convention>
 
-		<attribute>source</attribute>
-		<attribute>institution</attribute>
-		<attribute>comment</attribute>
-		<attribute>featureType</attribute>
+		<attribute optional="1">source</attribute>
+		<attribute optional="1">institution</attribute>
+		<attribute optional="1">comment</attribute>
+		<attribute optional="1">featureType</attribute>
+		<attribute optional="1">wmo_platform_code</attribute>
 	</rule>
 
 	<rule name="Check for OceanSITES global ACDD attribute">
 		<class>org.imos.mooring.abos.netcdf.check.Globals</class>
 		<convention>OceanSITES.*</convention>
 
-		<attribute>keywords_vocabulary</attribute>
-		<attribute>keywords</attribute>
-		<attribute>geospatial_lat_units</attribute>
-		<attribute>geospatial_lon_units</attribute>
-		<attribute>geospatial_vertical_units</attribute>
+		<attribute optional="1">summary</attribute>
+		<attribute optional="1">keywords_vocabulary</attribute>
+		<attribute optional="1">keywords</attribute>
+		<attribute optional="1">geospatial_lat_units</attribute>
+		<attribute optional="1">geospatial_lon_units</attribute>
+		<attribute optional="1">geospatial_vertical_units</attribute>
+		<attribute optional="1">geospatial_vertical_positive</attribute>
 
-		<attribute>time_coverage_end</attribute>
-		<attribute>time_coverage_resolution</attribute>
-		<attribute>cdm_data_type</attribute>
+		<attribute optional="1">time_coverage_duration</attribute>
+		<attribute optional="1">time_coverage_resolution</attribute>
+		<attribute optional="1">cdm_data_type</attribute>
 
-		<attribute>publisher_name</attribute>
-		<attribute>publisher_email</attribute>
-		<attribute>publisher_url</attribute>
-		<attribute>license</attribute>
-		<attribute>acknowlegement</attribute>
+		<attribute optional="1">publisher_name</attribute>
+		<attribute optional="1">publisher_email</attribute>
+		<attribute optional="1">publisher_url</attribute>
+		<attribute optional="1">license</attribute>
+		<attribute optional="1">acknowledgement</attribute>
 		<attribute>date_created</attribute>
-		<attribute>date_modified</attribute>
+		<attribute optional="1">date_modified</attribute>
+		<attribute optional="1">id</attribute>
 
-		<attribute>creatributor_name</attribute>
-		<attribute>creatributor_role</attribute>
-		<attribute>creatributor_email</attribute>
+		<attribute optional="1">contributor_name</attribute>
+		<attribute optional="1">contributor_role</attribute>
+		<attribute optional="1">contributor_email</attribute>
 	</rule>
 
 	<rule name="Check IMOS for Global Attributes Float">
@@ -113,23 +108,26 @@
 		<class>org.imos.mooring.abos.netcdf.check.Globals</class>
 		<convention>OceanSITES.*</convention>
 
-		<attribute>principal_investigator</attribute>
-		<attribute>principal_investigator_email</attribute>
-		<attribute>principal_investigator_url</attribute>
-		<attribute>project</attribute>
-		<attribute>array</attribute>
-		<attribute>network</attribute>
-		<attribute>area</attribute>
+		<attribute optional="1">principal_investigator</attribute>
+		<attribute optional="1">principal_investigator_email</attribute>
+		<attribute optional="1">principal_investigator_url</attribute>
+		<attribute optional="1">project</attribute>
+		<attribute optional="1">array</attribute>
+		<attribute optional="1">network</attribute>
+		<attribute optional="1">area</attribute>
 		<attribute>references</attribute>
-		<attribute>data_assembly_center</attribute>
-		<attribute>citation</attribute>
-		<attribute>processing_level</attribute>
-		<attribute>QC_indicator</attribute>
+		<attribute optional="1">data_assembly_center</attribute>
+		<attribute optional="1">citation</attribute>
+		<attribute optional="1">processing_level</attribute>
+		<attribute optional="1">QC_indicator</attribute>
 	</rule>
 	<rule name="Check IMOS for Global Attributes">
 		<class>org.imos.mooring.abos.netcdf.check.Globals</class>
 		<convention>IMOS.*</convention>
 
+		<attribute>title</attribute>
+
+		<attribute>institution</attribute>
 		<attribute>deployment_code</attribute>
 		<attribute>platform_code</attribute>
 		<attribute>site_code</attribute>
@@ -181,26 +179,84 @@
 		<class>org.imos.mooring.abos.netcdf.check.Name</class>
 	</rule>
 
-	<rule name="Check Variable Attributes">
+	<rule name="Check Variable Attributes OceanSITES">
 		<class>org.imos.mooring.abos.netcdf.check.VariableAttribute</class>
+		<convention>OceanSITES.*</convention>
 
-		<attribute>sensor_serial_number</attribute>
 		<attribute>units</attribute>
-		<attribute vartype="same">valid_min</attribute>
-		<attribute vartype="same">valid_max</attribute>
+		<attribute optional="1">QC_indicator</attribute>
+		<attribute optional="1">processing_level</attribute>
+		<attribute optional="1">comment</attribute>
+		<attribute optional="1">ancillary_variables</attribute>
+		<attribute optional="1">history</attribute>
+		<attribute optional="1">uncertainty</attribute>
+		<attribute optional="1">accuracy</attribute>
+		<attribute optional="1">precision</attribute>
+		<attribute optional="1">resolution</attribute>
+		<attribute optional="1">cell_methods</attribute>
+		<attribute optional="1">DM_indicator</attribute>
+		<attribute optional="1">reference_scale</attribute>
+		<attribute optional="1">sensor_model</attribute>
+		<attribute optional="1">sensor_manufacturer</attribute>
+		<attribute optional="1">sensor_reference</attribute>
+		<attribute optional="1">sensor_serial_number</attribute>
+		<attribute optional="1">sensor_mount</attribute>
+		<attribute optional="1">sensor_orientation</attribute>
+		<attribute vartype="same" optional="1">valid_min</attribute>
+		<attribute vartype="same" optional="1">valid_max</attribute>
 		<attribute vartype="same">_FillValue</attribute>
+	</rule>
+	<rule name="Check Variable Attributes IMOS">
+		<class>org.imos.mooring.abos.netcdf.check.VariableAttribute</class>
+		<convention>IMOS.*</convention>
+
+		<attribute>units</attribute>
+		<attribute vartype="same">_FillValue</attribute>
+		<attribute vartype="same" optional="1">valid_min</attribute>
+		<attribute vartype="same" optional="1">valid_max</attribute>
+		<attribute optional="1">add_offset</attribute>
+		<attribute optional="1">scale_factor</attribute>
+		<attribute optional="1">applied_offset</attribute>
+		<attribute optional="1">original_units</attribute>
+		<attribute optional="1">original_name</attribute>
+		<attribute optional="1">sensor_serial_number</attribute>
+		<attribute optional="1">comment</attribute>
+		<attribute optional="1">history</attribute>
+		<attribute optional="1">references</attribute>
+		<attribute optional="1">ancillary_variables</attribute>
+		<attribute optional="1">sensor_depth</attribute>
+		<attribute optional="1">sensor_height</attribute>
+		<attribute optional="1">observation_type</attribute>
+		<attribute optional="1">uncertainty</attribute>
+		<attribute optional="1">accuracy</attribute>
+		<attribute optional="1">precision</attribute>
+		<attribute optional="1">resolution</attribute>
+		<attribute optional="1">cell_methods</attribute>
+		<attribute optional="1">reference_datum</attribute>
+		<attribute optional="1">quality_control_set</attribute>
+		<attribute optional="1">quality_control_indicator</attribute>
 	</rule>
 	<rule name="Check Variable Units attribute">
 		<class>org.imos.mooring.abos.netcdf.check.StdUnits</class>
 	</rule>
-	<rule name="Check Ancillary Variable Attributes">
+	<rule name="Check Ancillary Variable Attributes IMOS">
 		<class>org.imos.mooring.abos.netcdf.check.AncillaryVariableAttributes</class>
+		<convention>IMOS.*</convention>
 
 		<attribute>quality_control_set</attribute>
 		<attribute>quality_control_conventions</attribute>
 		<attribute>valid_min</attribute>
 		<attribute>valid_max</attribute>
-		<attribute>_FillValue</attribute>
+		<attribute optional="1">_FillValue</attribute>
+		<attribute>flag_values</attribute>
+		<attribute>flag_meanings</attribute>
+	</rule>
+	<rule name="Check Ancillary Variable Attributes OceanSITES">
+		<class>org.imos.mooring.abos.netcdf.check.AncillaryVariableAttributes</class>
+		<convention>OceanSITES.*</convention>
+
+		<attribute regex="quality flag.*">long_name</attribute>
+		<attribute>conventions</attribute>
 		<attribute>flag_values</attribute>
 		<attribute>flag_meanings</attribute>
 	</rule>

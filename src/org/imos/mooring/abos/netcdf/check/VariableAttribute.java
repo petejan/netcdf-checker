@@ -42,6 +42,8 @@ public class VariableAttribute extends Check
 	@Override
 	public PassFail check(Element eElement)
 	{
+		boolean option = false;
+		
 		String checkName = eElement.getAttribute("name");
 		List<Variable> vars = ds.getVariables();
 		List<Variable> varsNoAnc = new ArrayList<Variable>(vars);
@@ -51,7 +53,7 @@ public class VariableAttribute extends Check
 		while (vi.hasNext())
 		{
 			Variable var = (Variable) vi.next();
-			logger.debug("FIND VAR : " + var.getShortName());
+			//logger.debug("FIND VAR : " + var.getShortName());
 			
 			if (!var.isCoordinateVariable())
 			{
@@ -60,7 +62,7 @@ public class VariableAttribute extends Check
 				{
 					String ancName = check.getStringValue();
 					Variable ancVar = ds.findVariable(ancName);
-					logger.debug("Deleteing " + ancName);
+					logger.debug("Deleteing " + ancName + " as its an auxilllary variable");
 					varsNoAnc.remove(ancVar);				
 				}			
 			}
@@ -71,7 +73,7 @@ public class VariableAttribute extends Check
 		while (vi.hasNext())
 		{
 			Variable var = (Variable) vi.next();
-			logger.debug("CHECH VAR : " + var.getShortName());
+			//logger.debug("CHECH VAR : " + var.getShortName());
 			
 			if (!var.isCoordinateVariable())
 			{
@@ -100,17 +102,35 @@ public class VariableAttribute extends Check
 						{
 							type = var.getDataType().toString();
 						}
+						if (nNM.item(k).getNodeName().equals("optional"))
+						{
+							String sOption = nNM.item(k).getNodeValue();
+							//logger.debug(checkName + " " +  var.getShortName() + " " + " option " + sOption);
+							if (Integer.parseInt(sOption) > 0)
+							{					
+								option = true;
+							}
+						}
+						else
+						{
+							option = false;
+						}
 					}
 					String varName = nAttribute.getTextContent();
 
 					Attribute check = var.findAttribute(varName.trim());
 					if (check == null)
 					{
-						logger.warn("FAILED:: " + checkName + " VARIABLE " + var.getShortName() + " ATTRIBUTE " + varName + " does not exist");
-						result.fail();
+						if (!option)
+						{
+							logger.warn("FAILED:: " + checkName + " VARIABLE " + var.getShortName() + " ATTRIBUTE " + varName + " does not exist");
+							result.fail();
+						}
 					}
 					else
 					{
+						list.put(var.getShortName() + ":" + check.getShortName(), true);
+
 						if ((p != null) && (check.isString())) // can only really regex a string type
 						{
 							String val = check.getStringValue();
@@ -120,8 +140,11 @@ public class VariableAttribute extends Check
 							}
 							else
 							{
-								logger.warn("FAILED:: " + checkName + " VARIABLE " + var.getShortName() + " ATTRIBUTE " + varName + " failed regex " + p + " is " + check.getStringValue());
-								result.fail();						
+								if (!option)
+								{	
+									logger.warn("FAILED:: " + checkName + " VARIABLE " + var.getShortName() + " ATTRIBUTE " + varName + " failed regex " + p + " is " + check.getStringValue());
+									result.fail();
+								}
 							}
 						}
 						else if (type != null)
@@ -133,8 +156,11 @@ public class VariableAttribute extends Check
 							}
 							else
 							{
-								logger.warn("FAILED:: " + checkName + " VARIABLE " + var.getShortName() + " ATTRIBUTE " + varName + " not type " + type + " is " + varType);
-								result.fail();						
+								if (!option)
+								{	
+									logger.warn("FAILED:: " + checkName + " VARIABLE " + var.getShortName() + " ATTRIBUTE " + varName + " not type " + type + " is " + varType);
+									result.fail();
+								}
 							}
 						}
 						else if (check.isString())
@@ -143,8 +169,11 @@ public class VariableAttribute extends Check
 						}
 						else
 						{
-							logger.warn("FAILED:: " + checkName + " VARIABLE " + var.getShortName() + " ATTRIBUTE " + varName + " not string is " + var.getDataType());
-							result.fail();
+							if (!option)
+							{							
+								logger.warn("FAILED:: " + checkName + " VARIABLE " + var.getShortName() + " ATTRIBUTE " + varName + " not string is " + var.getDataType());
+								result.fail();
+							}
 						}
 					}
 				}
